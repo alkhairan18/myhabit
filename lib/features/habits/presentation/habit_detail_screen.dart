@@ -35,6 +35,7 @@ class HabitDetailScreen extends ConsumerWidget {
     };
     final streak = calculateStreak(habit, done, today, weekStartsOn: weekStartsOn);
     final stats = calculateStats(habit, done, today, weekStartsOn: weekStartsOn);
+    final unlocked = unlockedBadges(streak.best).toSet();
     final cs = Theme.of(context).colorScheme;
     final color = Color(habit.color);
     final unit = habit.frequencyType == FrequencyType.timesPerWeek
@@ -198,6 +199,61 @@ class HabitDetailScreen extends ConsumerWidget {
                 rateColumn('stat-rateAll', l10n.successAll, stats.rateAll),
               ],
             ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.badgesTitle,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final m in badgeMilestones)
+                Container(
+                  key: Key('badge-$m'),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: unlocked.contains(m)
+                        ? cs.secondary.withAlpha(24)
+                        : cs.surface,
+                    borderRadius: BorderRadius.circular(rControl),
+                    border: Border.all(
+                      color: unlocked.contains(m)
+                          ? cs.secondary.withAlpha(140)
+                          : cs.outlineVariant,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        unlocked.contains(m)
+                            ? Icons.workspace_premium_rounded
+                            : Icons.lock_outline_rounded,
+                        size: 18,
+                        color: unlocked.contains(m)
+                            ? cs.secondary
+                            : cs.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.badgeDays(m, unit),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: unlocked.contains(m)
+                              ? cs.onSurface
+                              : cs.onSurfaceVariant,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 24),
           Text(

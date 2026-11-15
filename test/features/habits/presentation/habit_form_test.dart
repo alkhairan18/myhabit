@@ -129,10 +129,14 @@ void main() {
     await t.pumpAndSettle();
     await t.enterText(find.byKey(const Key('name')), '  Minum air ');
     await t.enterText(find.byKey(const Key('description')), '  Agar segar ');
+    await t.ensureVisible(find.text('Morning'));
+    await t.tap(find.text('Morning'));
+    await t.pumpAndSettle();
     await save(t);
     expect(spy.created.single.name, 'Minum air');
     expect(spy.created.single.description, 'Agar segar');
     expect(spy.created.single.frequencyType, FrequencyType.daily);
+    expect(spy.created.single.timeOfDay, TimeOfDaySlot.morning);
     expect(find.text('home'), findsOneWidget);
   });
 
@@ -268,6 +272,8 @@ class _DummyGateway implements NotificationGateway {
   Future<void> cancelAll() async {}
   @override
   Future<void> schedule(PlannedNotification n, {bool exact = true}) async {}
+  @override
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay) async {}
 }
 
 class _ExactDeniedService extends NotificationService {

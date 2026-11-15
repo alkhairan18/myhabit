@@ -703,6 +703,138 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mulai mencatat kebiasaan'**
   String get onboardingStart;
+
+  /// No description provided for @timeOfDaySectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu pelaksanaan'**
+  String get timeOfDaySectionLabel;
+
+  /// No description provided for @timeAnytime.
+  ///
+  /// In id, this message translates to:
+  /// **'Bebas'**
+  String get timeAnytime;
+
+  /// No description provided for @timeMorning.
+  ///
+  /// In id, this message translates to:
+  /// **'Pagi'**
+  String get timeMorning;
+
+  /// No description provided for @timeAfternoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Siang'**
+  String get timeAfternoon;
+
+  /// No description provided for @timeEvening.
+  ///
+  /// In id, this message translates to:
+  /// **'Malam'**
+  String get timeEvening;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get filterAll;
+
+  /// No description provided for @dailyCelebration.
+  ///
+  /// In id, this message translates to:
+  /// **'Target harian 100% tercapai! Pertahankan ritme baik ini.'**
+  String get dailyCelebration;
+
+  /// No description provided for @badgesTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lencana pencapaian'**
+  String get badgesTitle;
+
+  /// No description provided for @badgeDays.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} {unit}'**
+  String badgeDays(int count, String unit);
+
+  /// No description provided for @weeklyRecapTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan minggu ini'**
+  String get weeklyRecapTitle;
+
+  /// No description provided for @weeklyRecapCheckIns.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai minggu ini'**
+  String get weeklyRecapCheckIns;
+
+  /// No description provided for @weeklyRecapPerfectDays.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari sempurna'**
+  String get weeklyRecapPerfectDays;
+
+  /// No description provided for @weeklyRecapTopHabit.
+  ///
+  /// In id, this message translates to:
+  /// **'Paling konsisten'**
+  String get weeklyRecapTopHabit;
+
+  /// No description provided for @weeklyRecapNoTop.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada'**
+  String get weeklyRecapNoTop;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor data (CSV)'**
+  String get exportCsv;
+
+  /// No description provided for @exportCsvCopy.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin CSV'**
+  String get exportCsvCopy;
+
+  /// No description provided for @exportCsvCopied.
+  ///
+  /// In id, this message translates to:
+  /// **'Data CSV disalin ke papan klip'**
+  String get exportCsvCopied;
+
+  /// No description provided for @importJson.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor data (JSON)'**
+  String get importJson;
+
+  /// No description provided for @importJsonHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel teks cadangan JSON di sini...'**
+  String get importJsonHint;
+
+  /// No description provided for @importJsonConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get importJsonConfirm;
+
+  /// No description provided for @importJsonSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kebiasaan berhasil dipulihkan'**
+  String importJsonSuccess(int count);
+
+  /// No description provided for @importJsonError.
+  ///
+  /// In id, this message translates to:
+  /// **'Format JSON tidak valid'**
+  String get importJsonError;
 }
 
 class _AppLocalizationsDelegate

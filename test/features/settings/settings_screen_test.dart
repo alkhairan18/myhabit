@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SpyRepo extends HabitRepository {
   SpyRepo() : super(AppDatabase(NativeDatabase.memory()));
   final created = <HabitDraft>[];
+  final imported = <String>[];
   bool cleared = false;
 
   @override
@@ -35,6 +36,15 @@ class SpyRepo extends HabitRepository {
 
   @override
   Future<String> exportJson() async => '{"habits":[{"name":"Baca"}]}';
+
+  @override
+  Future<String> exportCsv() async => 'habit_id,habit_name\n1,Baca\n';
+
+  @override
+  Future<int> importJson(String rawJson) async {
+    imported.add(rawJson);
+    return 1;
+  }
 
   @override
   Future<void> clearAll() async {
@@ -132,6 +142,21 @@ void main() {
     expect(find.textContaining('"Baca"'), findsOneWidget);
     await t.tap(find.byKey(const Key('close-export')));
     await t.pumpAndSettle();
+
+    await t.ensureVisible(find.byKey(const Key('export-csv')));
+    await t.tap(find.byKey(const Key('export-csv')));
+    await t.pumpAndSettle();
+    expect(find.textContaining('habit_id,habit_name'), findsOneWidget);
+    await t.tap(find.byKey(const Key('close-export-csv')));
+    await t.pumpAndSettle();
+
+    await t.ensureVisible(find.byKey(const Key('import-json')));
+    await t.tap(find.byKey(const Key('import-json')));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('import-json-input')), '{"habits":[{"name":"Baca"}]}');
+    await t.tap(find.byKey(const Key('confirm-import-json')));
+    await t.pumpAndSettle();
+    expect(repo.imported.single, '{"habits":[{"name":"Baca"}]}');
 
     await t.ensureVisible(find.byKey(const Key('clear-all')));
     await t.tap(find.byKey(const Key('clear-all')));

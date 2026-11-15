@@ -50,3 +50,70 @@ HabitStats calculateStats(Habit h, Set<DateTime> completed, DateTime today,
 ({int done, int target}) todayProgress(List<Habit> scheduledToday, Set<int> completedHabitIds) =>
     (done: scheduledToday.where((h) => completedHabitIds.contains(h.id)).length,
         target: scheduledToday.length);
+
+const badgeMilestones = [7, 30, 100];
+
+List<int> unlockedBadges(int bestStreak) =>
+    [for (final m in badgeMilestones) if (bestStreak >= m) m];
+
+class WeeklyRecap {
+  const WeeklyRecap({
+    required this.completedCheckIns,
+    required this.scheduledCheckIns,
+    required this.perfectDays,
+    this.topHabitName,
+  });
+
+  final int completedCheckIns;
+  final int scheduledCheckIns;
+  final int perfectDays;
+  final String? topHabitName;
+}
+
+WeeklyRecap calculateWeeklyRecap(
+  List<Habit> habits,
+  Map<int, Set<DateTime>> logsByHabit,
+  DateTime today, {
+  int weekStartsOn = DateTime.monday,
+}) {
+  final start = weekStart(today, weekStartsOn: weekStartsOn);
+  var completed = 0;
+  var scheduled = 0;
+  var perfectDays = 0;
+  final countsByHabit = <int, int>{};
+
+  for (var d = start; !d.isAfter(today); d = d.add(_day)) {
+    final due = [
+      for (final h in habits)
+        if (!d.isBefore(h.createdAt) && isScheduledOn(h, d)) h
+    ];
+    if (due.isEmpty) continue;
+    var doneOnDay = 0;
+    for (final h in due) {
+      scheduled++;
+      if ((logsByHabit[h.id] ?? const {}).contains(d)) {
+        completed++;
+        doneOnDay++;
+        countsByHabit[h.id] = (countsByHabit[h.id] ?? 0) + 1;
+      }
+    }
+    if (doneOnDay == due.length) perfectDays++;
+  }
+
+  String? topName;
+  var topCount = 0;
+  for (final h in habits) {
+    final c = countsByHabit[h.id] ?? 0;
+    if (c > topCount) {
+      topCount = c;
+      topName = h.name;
+    }
+  }
+
+  return WeeklyRecap(
+    completedCheckIns: completed,
+    scheduledCheckIns: scheduled,
+    perfectDays: perfectDays,
+    topHabitName: topName,
+  );
+}

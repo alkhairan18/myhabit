@@ -28,6 +28,7 @@ class _State extends ConsumerState<HabitFormScreen> {
   String _icon = habitIcons.keys.first;
   int _color = habitColors.first.toARGB32();
   FrequencyType _type = FrequencyType.daily;
+  TimeOfDaySlot _timeOfDay = TimeOfDaySlot.anytime;
   final _days = <int>{};
   var _reminders = <ReminderTime>[];
   var _errors = <HabitError>{};
@@ -58,6 +59,7 @@ class _State extends ConsumerState<HabitFormScreen> {
         _icon = h.icon;
         _color = h.color;
         _type = h.frequencyType;
+        _timeOfDay = h.timeOfDay;
         _days
           ..clear()
           ..addAll(h.frequencyDays);
@@ -94,6 +96,7 @@ class _State extends ConsumerState<HabitFormScreen> {
       frequencyType: _type,
       frequencyDays: _type == FrequencyType.specificDays ? _days : const {},
       targetPerWeek: _type == FrequencyType.timesPerWeek ? target : null,
+      timeOfDay: _timeOfDay,
     );
     final repo = ref.read(habitRepositoryProvider);
     final id = widget.habitId;
@@ -309,6 +312,30 @@ class _State extends ConsumerState<HabitFormScreen> {
                   if (_errors.contains(HabitError.invalidWeeklyTarget))
                     error(l10n.errTarget),
                 ],
+                sectionLabel(l10n.timeOfDaySectionLabel),
+                SegmentedButton<TimeOfDaySlot>(
+                  segments: [
+                    ButtonSegment(
+                      value: TimeOfDaySlot.anytime,
+                      label: Text(l10n.timeAnytime),
+                    ),
+                    ButtonSegment(
+                      value: TimeOfDaySlot.morning,
+                      label: Text(l10n.timeMorning),
+                    ),
+                    ButtonSegment(
+                      value: TimeOfDaySlot.afternoon,
+                      label: Text(l10n.timeAfternoon),
+                    ),
+                    ButtonSegment(
+                      value: TimeOfDaySlot.evening,
+                      label: Text(l10n.timeEvening),
+                    ),
+                  ],
+                  selected: {_timeOfDay},
+                  onSelectionChanged: (s) =>
+                      setState(() => _timeOfDay = s.first),
+                ),
                 sectionLabel(l10n.reminders),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final r in _reminders)

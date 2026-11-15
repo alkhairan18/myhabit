@@ -129,6 +129,8 @@ class _NoopGateway implements NotificationGateway {
   Future<void> cancelAll() async {}
   @override
   Future<void> schedule(n, {bool exact = true}) async {}
+  @override
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay) async {}
 }
 
 final notificationServiceProvider =

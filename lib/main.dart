@@ -11,8 +11,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final gateway = await FlutterLocalNotificationsGateway.init();
-  final notifService = NotificationService(gateway);
-  final container = ProviderContainer(
+  late final ProviderContainer container;
+  final notifService = NotificationService(
+    gateway,
+    onMarkDone: (habitId) async {
+      final repo = container.read(habitRepositoryProvider);
+      final today = container.read(todayProvider);
+      try {
+        await repo.setCompletion(habitId, today, true, today: today);
+      } catch (_) {}
+    },
+  );
+  gateway.onAction = notifService.handleAction;
+  container = ProviderContainer(
     overrides: [
       settingsRepositoryProvider.overrideWithValue(SettingsRepository(prefs)),
       notificationServiceProvider.overrideWithValue(notifService),

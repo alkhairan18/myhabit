@@ -34,6 +34,13 @@ class OverallStatsScreen extends ConsumerWidget {
     }
     final avg7 = habits.isEmpty ? 0.0 : sum7 / habits.length;
     final avg30 = habits.isEmpty ? 0.0 : sum30 / habits.length;
+    final weekStartsOn = ref.watch(weekStartsOnProvider);
+    final recap = calculateWeeklyRecap(
+      habits,
+      logsByHabit,
+      today,
+      weekStartsOn: weekStartsOn,
+    );
     String pct(double r) => '${(r * 100).round()}%';
 
     double dayRatio(DateTime day) {
@@ -128,6 +135,89 @@ class OverallStatsScreen extends ConsumerWidget {
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.w800,
                               fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.weeklyRecapTitle,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            key: const Key('weekly-recap-card'),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(rCard),
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.weeklyRecapCheckIns,
+                        style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.progressLabel(
+                          recap.completedCheckIns,
+                          recap.scheduledCheckIns,
+                        ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: cs.primary,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.weeklyRecapPerfectDays,
+                        style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${recap.perfectDays}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.weeklyRecapTopHabit,
+                        style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        recap.topHabitName ?? l10n.weeklyRecapNoTop,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
                       ),
                     ],

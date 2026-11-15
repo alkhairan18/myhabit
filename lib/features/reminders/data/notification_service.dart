@@ -14,11 +14,28 @@ abstract class NotificationGateway {
   Future<bool> canScheduleExact();
   Future<void> cancelAll();
   Future<void> schedule(PlannedNotification n, {bool exact = true});
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay);
 }
 
 class NotificationService {
-  NotificationService(this._gateway);
+  NotificationService(this._gateway, {this.onMarkDone});
   final NotificationGateway _gateway;
+  final Future<void> Function(int habitId)? onMarkDone;
+
+  Future<void> handleAction(String? actionId, String? payload) async {
+    if (payload == null || payload.isEmpty) return;
+    final sep = payload.indexOf(':');
+    final idStr = sep == -1 ? payload : payload.substring(0, sep);
+    final title = sep == -1 ? 'Rutin' : payload.substring(sep + 1);
+    final habitId = int.tryParse(idStr);
+    if (habitId == null) return;
+    if (actionId == 'mark_done') {
+      await onMarkDone?.call(habitId);
+    } else if (actionId == 'snooze') {
+      await _gateway.scheduleSnooze(
+          habitId, title, const Duration(minutes: 15));
+    }
+  }
 
   Future<ReminderSyncResult> sync(
     List<Habit> activeHabits,
@@ -48,6 +65,7 @@ class NotificationService {
 class FlutterLocalNotificationsGateway implements NotificationGateway {
   FlutterLocalNotificationsGateway(this._plugin);
   final FlutterLocalNotificationsPlugin _plugin;
+  Future<void> Function(String? actionId, String? payload)? onAction;
 
   static Future<FlutterLocalNotificationsGateway> init() async {
     tz.initializeTimeZones();
@@ -58,12 +76,16 @@ class FlutterLocalNotificationsGateway implements NotificationGateway {
       // Fallback to UTC when host/test has no platform timezone channel.
     }
     final p = FlutterLocalNotificationsPlugin();
+    final gateway = FlutterLocalNotificationsGateway(p);
     await p.initialize(
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ),
+      onDidReceiveNotificationResponse: (resp) {
+        gateway.onAction?.call(resp.actionId, resp.payload);
+      },
     );
-    return FlutterLocalNotificationsGateway(p);
+    return gateway;
   }
 
   AndroidFlutterLocalNotificationsPlugin? get _android =>
@@ -81,6 +103,27 @@ class FlutterLocalNotificationsGateway implements NotificationGateway {
   @override
   Future<void> cancelAll() => _plugin.cancelAll();
 
+  static const _details = NotificationDetails(
+    android: AndroidNotificationDetails(
+      'rutin_reminders',
+      'Reminders',
+      importance: Importance.high,
+      priority: Priority.high,
+      actions: [
+        AndroidNotificationAction(
+          'mark_done',
+          'Tandai selesai',
+          showsUserInterface: true,
+        ),
+        AndroidNotificationAction(
+          'snooze',
+          'Tunda 15 mnt',
+          showsUserInterface: true,
+        ),
+      ],
+    ),
+  );
+
   @override
   Future<void> schedule(PlannedNotification n, {bool exact = true}) async {
     final now = tz.TZDateTime.now(tz.local);
@@ -93,14 +136,28 @@ class FlutterLocalNotificationsGateway implements NotificationGateway {
       id: n.id,
       title: n.title,
       scheduledDate: d,
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails('rutin_reminders', 'Reminders',
-            importance: Importance.high, priority: Priority.high),
-      ),
+      notificationDetails: _details,
+      payload: '${n.habitId}:${n.title}',
       androidScheduleMode: exact
           ? AndroidScheduleMode.exactAllowWhileIdle
           : AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+    );
+  }
+
+  @override
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay) async {
+    final exact = await canScheduleExact();
+    final d = tz.TZDateTime.now(tz.local).add(delay);
+    await _plugin.zonedSchedule(
+      id: (habitId * 100000 + 99999) & 0x7fffffff,
+      title: title,
+      scheduledDate: d,
+      notificationDetails: _details,
+      payload: '$habitId:$title',
+      androidScheduleMode: exact
+          ? AndroidScheduleMode.exactAllowWhileIdle
+          : AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 }

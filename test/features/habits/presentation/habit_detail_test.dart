@@ -75,6 +75,22 @@ void main() {
     expect(find.text('Baca'), findsOneWidget);
     expect(txt(t, 'stat-total'), '3');
   });
+
+  testWidgets('detail renders milestone badges for 7, 30, and 100 days (FR-25)', (t) async {
+    final sevenDayLogs = [
+      for (var day = 9; day <= 15; day++)
+        HabitLog(habitId: 3, date: d(2026, 11, day), completed: true),
+    ];
+    await t.pumpWidget(wrap(const HabitDetailScreen(habitId: 3), overrides: [
+      activeHabitsProvider.overrideWith((ref) => Stream.value([habit])),
+      archivedHabitsProvider.overrideWith((ref) => Stream.value([])),
+      logsProvider.overrideWith((ref, id) => Stream.value(sevenDayLogs)),
+    ]));
+    await t.pumpAndSettle();
+    expect(find.byKey(const Key('badge-7')), findsOneWidget);
+    expect(find.byKey(const Key('badge-30')), findsOneWidget);
+    expect(find.byKey(const Key('badge-100')), findsOneWidget);
+  });
 }
 
 

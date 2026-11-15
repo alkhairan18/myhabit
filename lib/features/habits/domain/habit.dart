@@ -1,5 +1,7 @@
 enum FrequencyType { daily, specificDays, timesPerWeek }
 
+enum TimeOfDaySlot { anytime, morning, afternoon, evening }
+
 class Habit {
   const Habit({
     required this.id,
@@ -10,6 +12,7 @@ class Habit {
     required this.frequencyType,
     this.frequencyDays = const {},
     this.targetPerWeek,
+    this.timeOfDay = TimeOfDaySlot.anytime,
     required this.sortOrder,
     required this.createdAt,
     this.archivedAt,
@@ -25,6 +28,7 @@ class Habit {
   /// DateTime.monday..DateTime.sunday
   final Set<int> frequencyDays;
   final int? targetPerWeek;
+  final TimeOfDaySlot timeOfDay;
   final int sortOrder;
   final DateTime createdAt;
   final DateTime? archivedAt;

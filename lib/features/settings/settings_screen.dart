@@ -50,6 +50,89 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _exportCsv(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final csvStr = await ref.read(habitRepositoryProvider).exportCsv();
+    if (!context.mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(l10n.exportCsv),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: SelectableText(
+              csvStr,
+              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            key: const Key('export-csv-copy'),
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: csvStr));
+              if (c.mounted) {
+                Navigator.pop(c);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.exportCsvCopied)),
+                );
+              }
+            },
+            child: Text(l10n.exportCsvCopy),
+          ),
+          TextButton(
+            key: const Key('close-export-csv'),
+            onPressed: () => Navigator.pop(c),
+            child: Text(l10n.cancel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _importJson(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final ctrl = TextEditingController();
+    final raw = await showDialog<String>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(l10n.importJson),
+        content: TextField(
+          key: const Key('import-json-input'),
+          controller: ctrl,
+          maxLines: 5,
+          decoration: InputDecoration(hintText: l10n.importJsonHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            key: const Key('confirm-import-json'),
+            onPressed: () => Navigator.pop(c, ctrl.text),
+            child: Text(l10n.importJsonConfirm),
+          ),
+        ],
+      ),
+    );
+    if (raw == null || raw.trim().isEmpty) return;
+    try {
+      final count = await ref.read(habitRepositoryProvider).importJson(raw);
+      await syncReminders(ref);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.importJsonSuccess(count))),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.importJsonError)),
+        );
+      }
+    }
+  }
+
   Future<void> _clearAll(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
     final ok = await showDialog<bool>(
       context: context,
@@ -178,6 +261,18 @@ class SettingsScreen extends ConsumerWidget {
               leading: Icon(Icons.download_outlined, color: cs.primary),
               title: Text(l10n.exportJson),
               onTap: () => _exportJson(context, ref, l10n),
+            ),
+            ListTile(
+              key: const Key('export-csv'),
+              leading: Icon(Icons.table_view_outlined, color: cs.primary),
+              title: Text(l10n.exportCsv),
+              onTap: () => _exportCsv(context, ref, l10n),
+            ),
+            ListTile(
+              key: const Key('import-json'),
+              leading: Icon(Icons.upload_file_outlined, color: cs.primary),
+              title: Text(l10n.importJson),
+              onTap: () => _importJson(context, ref, l10n),
             ),
             ListTile(
               key: const Key('clear-all'),

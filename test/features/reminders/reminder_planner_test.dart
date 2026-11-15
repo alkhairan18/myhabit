@@ -14,6 +14,7 @@ class FakeGateway implements NotificationGateway {
   bool exact;
   int cancels = 0;
   final scheduled = <(PlannedNotification, bool)>[];
+  final snoozed = <(int, String, Duration)>[];
   @override
   Future<bool> requestPermission() async => perm;
   @override
@@ -22,6 +23,9 @@ class FakeGateway implements NotificationGateway {
   Future<void> cancelAll() async => cancels++;
   @override
   Future<void> schedule(PlannedNotification n, {bool exact = true}) async => scheduled.add((n, exact));
+  @override
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay) async =>
+      snoozed.add((habitId, title, delay));
 }
 
 void main() {
@@ -91,5 +95,16 @@ void main() {
       completedTodayHabitIds: {1},
     );
     expect(res.map((n) => n.weekday).toList(), [1, 2, 4, 5, 6, 7]);
+  });
+
+  test('handleAction dispatches mark_done and snooze quick actions (FR-35)', () async {
+    final g = FakeGateway();
+    final marked = <int>[];
+    final svc = NotificationService(g, onMarkDone: (id) async => marked.add(id));
+    await svc.handleAction('mark_done', '42');
+    expect(marked, [42]);
+
+    await svc.handleAction('snooze', '42:Minum air');
+    expect(g.snoozed.single, (42, 'Minum air', const Duration(minutes: 15)));
   });
 }

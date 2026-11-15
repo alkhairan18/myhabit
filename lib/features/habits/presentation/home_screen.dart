@@ -13,8 +13,15 @@ import '../domain/stats.dart';
 import 'habit_card.dart';
 import 'week_strip.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  TimeOfDaySlot? _filterSlot;
 
   Future<void> _editNote(
     BuildContext context,
@@ -57,7 +64,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final today = ref.watch(todayProvider);
     final selected = ref.watch(selectedDateProvider);
@@ -125,12 +132,18 @@ class HomeScreen extends ConsumerWidget {
     Map<int, String> notes,
   ) {
     final scheduled = [for (final h in all) if (isScheduledOn(h, selected)) h];
+    final hasSlotHabits =
+        scheduled.any((h) => h.timeOfDay != TimeOfDaySlot.anytime);
+    final visible = _filterSlot == null
+        ? scheduled
+        : [for (final h in scheduled) if (h.timeOfDay == _filterSlot) h];
     final p = todayProgress(scheduled, done);
     final ratio = p.target == 0 ? 0.0 : p.done / p.target;
     final allDone = p.target > 0 && p.done == p.target;
     final locale = Localizations.localeOf(context).toString();
     final cs = Theme.of(context).colorScheme;
     final weekStartsOn = ref.watch(weekStartsOnProvider);
+    final noAnim = MediaQuery.disableAnimationsOf(context);
 
     return Column(
       children: [
@@ -207,7 +220,7 @@ class HomeScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(rMicro),
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: ratio),
-                    duration: animFast,
+                    duration: noAnim ? Duration.zero : animFast,
                     curve: Curves.easeOutCubic,
                     builder: (_, v, _) => LinearProgressIndicator(
                       value: v,
@@ -219,12 +232,65 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                if (allDone) ...[
+                  const SizedBox(height: 12),
+                  TweenAnimationBuilder<double>(
+                    key: const Key('daily-celebration'),
+                    tween: Tween(begin: noAnim ? 1.0 : 0.92, end: 1.0),
+                    duration: noAnim ? Duration.zero : animFast,
+                    curve: Curves.easeOutBack,
+                    builder: (_, scale, child) =>
+                        Transform.scale(scale: scale, child: child),
+                    child: Row(
+                      children: [
+                        Icon(Icons.auto_awesome_rounded,
+                            size: 18, color: cs.secondary),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            l10n.dailyCelebration,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: cs.secondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         ),
+        if (hasSlotHabits)
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Row(
+              children: [
+                for (final (slot, keyName, label) in [
+                  (null, 'filter-all', l10n.filterAll),
+                  (TimeOfDaySlot.morning, 'filter-morning', l10n.timeMorning),
+                  (TimeOfDaySlot.afternoon, 'filter-afternoon', l10n.timeAfternoon),
+                  (TimeOfDaySlot.evening, 'filter-evening', l10n.timeEvening),
+                ]) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      key: Key(keyName),
+                      label: Text(label),
+                      selected: _filterSlot == slot,
+                      onSelected: (_) => setState(() => _filterSlot = slot),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         Expanded(
-          child: scheduled.isEmpty
+          child: visible.isEmpty
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
@@ -237,15 +303,15 @@ class HomeScreen extends ConsumerWidget {
                 )
               : ReorderableListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                  itemCount: scheduled.length,
+                  itemCount: visible.length,
                   onReorderItem: (oldIndex, newIndex) {
-                    final ids = [for (final h in scheduled) h.id];
+                    final ids = [for (final h in visible) h.id];
                     final moved = ids.removeAt(oldIndex);
                     ids.insert(newIndex, moved);
                     ref.read(habitRepositoryProvider).reorder(ids);
                   },
                   itemBuilder: (context, index) {
-                    final h = scheduled[index];
+                    final h = visible[index];
                     return HabitCard(
                       key: ValueKey('habit-card-${h.id}'),
                       habit: h,

@@ -48,9 +48,9 @@ class SpyRepo extends HabitRepository {
   Future<List<ReminderRow>> allEnabledReminders() async => const [];
 }
 
-Habit habit(int id, {String name = 'Minum air', String? description}) => Habit(
+Habit habit(int id, {String name = 'Minum air', String? description, TimeOfDaySlot timeOfDay = TimeOfDaySlot.anytime}) => Habit(
     id: id, name: name, description: description, icon: 'water', color: 0xFF1E88E5,
-    frequencyType: FrequencyType.daily, sortOrder: id, createdAt: d(2026, 1, 1));
+    frequencyType: FrequencyType.daily, timeOfDay: timeOfDay, sortOrder: id, createdAt: d(2026, 1, 1));
 
 Widget app(List<Habit> habits, List<HabitLog> logs, SpyRepo spy, DateTime Function() clock) =>
     ProviderScope(
@@ -184,6 +184,41 @@ void main() {
     await t.tap(find.byKey(const Key('save-note')));
     await t.pumpAndSettle();
     expect(spy.notes, [(1, d(2026, 11, 15), '8 gelas selesai')]);
+  });
+
+  testWidgets('time-of-day filter chips filter habits by morning/evening (FR-08)', (t) async {
+    await t.pumpWidget(app(
+      [
+        habit(1, name: 'Lari pagi', timeOfDay: TimeOfDaySlot.morning),
+        habit(2, name: 'Jurnal malam', timeOfDay: TimeOfDaySlot.evening),
+      ],
+      [],
+      SpyRepo(),
+      () => now,
+    ));
+    await t.pump();
+    expect(find.text('Lari pagi'), findsOneWidget);
+    expect(find.text('Jurnal malam'), findsOneWidget);
+
+    await t.tap(find.byKey(const Key('filter-morning')));
+    await t.pump();
+    expect(find.text('Lari pagi'), findsOneWidget);
+    expect(find.text('Jurnal malam'), findsNothing);
+
+    await t.tap(find.byKey(const Key('filter-all')));
+    await t.pump();
+    expect(find.text('Jurnal malam'), findsOneWidget);
+  });
+
+  testWidgets('100% completion displays daily celebration banner', (t) async {
+    await t.pumpWidget(app(
+      [habit(1, name: 'Minum air')],
+      [HabitLog(habitId: 1, date: d(2026, 11, 15), completed: true)],
+      SpyRepo(),
+      () => now,
+    ));
+    await t.pump();
+    expect(find.byKey(const Key('daily-celebration')), findsOneWidget);
   });
 }
 

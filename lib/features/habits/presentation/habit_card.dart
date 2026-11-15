@@ -35,8 +35,18 @@ class HabitCard extends StatelessWidget {
               .join(', ');
         }(),
     };
-    final desc = habit.description;
-    return (desc != null && desc.isNotEmpty) ? '$freq · $desc' : freq;
+    final slotLabel = switch (habit.timeOfDay) {
+      TimeOfDaySlot.anytime => null,
+      TimeOfDaySlot.morning => l10n.timeMorning,
+      TimeOfDaySlot.afternoon => l10n.timeAfternoon,
+      TimeOfDaySlot.evening => l10n.timeEvening,
+    };
+    final parts = [
+      freq,
+      ?slotLabel,
+      if (habit.description != null && habit.description!.isNotEmpty) habit.description!,
+    ];
+    return parts.join(' · ');
   }
 
   @override

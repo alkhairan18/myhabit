@@ -25,6 +25,8 @@ class FakeGateway implements NotificationGateway {
   Future<void> cancelAll() async => cancels++;
   @override
   Future<void> schedule(PlannedNotification n, {bool exact = true}) async => scheduled.add((n, exact));
+  @override
+  Future<void> scheduleSnooze(int habitId, String title, Duration delay) async {}
 }
 
 void main() {

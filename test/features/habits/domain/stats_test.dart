@@ -27,4 +27,44 @@ void main() {
         frequencyType: FrequencyType.daily, sortOrder: i, createdAt: d(2026, 1, 1))];
     expect(todayProgress(hs, {1, 2, 3}), (done: 3, target: 5));
   });
+  test('unlockedBadges returns reached milestones from [7, 30, 100]', () {
+    expect(unlockedBadges(0), isEmpty);
+    expect(unlockedBadges(6), isEmpty);
+    expect(unlockedBadges(7), [7]);
+    expect(unlockedBadges(45), [7, 30]);
+    expect(unlockedBadges(120), [7, 30, 100]);
+  });
+  test('calculateWeeklyRecap summarizes completed, scheduled, perfectDays, and topHabitName', () {
+    final h1 = Habit(
+      id: 1,
+      name: 'Minum air',
+      icon: 'water',
+      color: 0,
+      frequencyType: FrequencyType.daily,
+      sortOrder: 0,
+      createdAt: d(2026, 11, 1),
+    );
+    final h2 = Habit(
+      id: 2,
+      name: 'Membaca',
+      icon: 'book',
+      color: 0,
+      frequencyType: FrequencyType.daily,
+      sortOrder: 1,
+      createdAt: d(2026, 11, 1),
+    );
+    // Week starting Monday 2026-11-09 through Wednesday 2026-11-11 (3 days, 6 scheduled total).
+    final recap = calculateWeeklyRecap(
+      [h1, h2],
+      {
+        1: {d(2026, 11, 9), d(2026, 11, 10), d(2026, 11, 11)},
+        2: {d(2026, 11, 9)},
+      },
+      d(2026, 11, 11),
+    );
+    expect(recap.completedCheckIns, 4);
+    expect(recap.scheduledCheckIns, 6);
+    expect(recap.perfectDays, 1);
+    expect(recap.topHabitName, 'Minum air');
+  });
 }

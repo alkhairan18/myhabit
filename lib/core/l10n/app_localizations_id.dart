@@ -332,4 +332,75 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get onboardingStart => 'Mulai mencatat kebiasaan';
+
+  @override
+  String get timeOfDaySectionLabel => 'Waktu pelaksanaan';
+
+  @override
+  String get timeAnytime => 'Bebas';
+
+  @override
+  String get timeMorning => 'Pagi';
+
+  @override
+  String get timeAfternoon => 'Siang';
+
+  @override
+  String get timeEvening => 'Malam';
+
+  @override
+  String get filterAll => 'Semua';
+
+  @override
+  String get dailyCelebration =>
+      'Target harian 100% tercapai! Pertahankan ritme baik ini.';
+
+  @override
+  String get badgesTitle => 'Lencana pencapaian';
+
+  @override
+  String badgeDays(int count, String unit) {
+    return '$count $unit';
+  }
+
+  @override
+  String get weeklyRecapTitle => 'Ringkasan minggu ini';
+
+  @override
+  String get weeklyRecapCheckIns => 'Selesai minggu ini';
+
+  @override
+  String get weeklyRecapPerfectDays => 'Hari sempurna';
+
+  @override
+  String get weeklyRecapTopHabit => 'Paling konsisten';
+
+  @override
+  String get weeklyRecapNoTop => 'Belum ada';
+
+  @override
+  String get exportCsv => 'Ekspor data (CSV)';
+
+  @override
+  String get exportCsvCopy => 'Salin CSV';
+
+  @override
+  String get exportCsvCopied => 'Data CSV disalin ke papan klip';
+
+  @override
+  String get importJson => 'Impor data (JSON)';
+
+  @override
+  String get importJsonHint => 'Tempel teks cadangan JSON di sini...';
+
+  @override
+  String get importJsonConfirm => 'Pulihkan';
+
+  @override
+  String importJsonSuccess(int count) {
+    return '$count kebiasaan berhasil dipulihkan';
+  }
+
+  @override
+  String get importJsonError => 'Format JSON tidak valid';
 }

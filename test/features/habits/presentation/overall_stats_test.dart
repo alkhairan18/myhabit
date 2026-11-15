@@ -47,6 +47,8 @@ void main() {
 
     expect(t.widget<Text>(find.byKey(const Key('overall-active'))).data, '1');
     expect(t.widget<Text>(find.byKey(const Key('overall-rate7'))).data, '43%');
+    expect(find.byKey(const Key('weekly-recap-card')), findsOneWidget);
+    expect(find.text('3/7'), findsOneWidget);
     expect(find.text('Last 7 days performance'), findsOneWidget);
     expect(find.text('Last 4 weeks performance'), findsOneWidget);
   });

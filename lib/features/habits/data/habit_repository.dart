@@ -40,6 +40,7 @@ class HabitDraft {
     required this.frequencyType,
     this.frequencyDays = const {},
     this.targetPerWeek,
+    this.timeOfDay = TimeOfDaySlot.anytime,
   });
   final String name;
   final String? description;
@@ -48,27 +49,47 @@ class HabitDraft {
   final FrequencyType frequencyType;
   final Set<int> frequencyDays;
   final int? targetPerWeek;
+  final TimeOfDaySlot timeOfDay;
 }
 
 class HabitRepository {
   HabitRepository(this._db);
   final AppDatabase _db;
 
-  Habit _toHabit(HabitRow r) => Habit(
-        id: r.id,
-        name: r.name,
-        description: r.description,
-        icon: r.icon,
-        color: r.color,
-        frequencyType: FrequencyType.values.byName(r.frequencyType),
-        frequencyDays: r.frequencyDays.isEmpty
-            ? {}
-            : r.frequencyDays.split(',').map(int.parse).toSet(),
-        targetPerWeek: r.targetPerWeek,
-        sortOrder: r.sortOrder,
-        createdAt: parseIso(r.createdAt),
-        archivedAt: r.archivedAt == null ? null : parseIso(r.archivedAt!),
-      );
+  static (FrequencyType, TimeOfDaySlot) _parseFreqAndSlot(String raw) {
+    final parts = raw.split(':');
+    final freq = FrequencyType.values.byName(parts[0]);
+    final slot = parts.length > 1
+        ? TimeOfDaySlot.values.firstWhere(
+            (s) => s.name == parts[1],
+            orElse: () => TimeOfDaySlot.anytime,
+          )
+        : TimeOfDaySlot.anytime;
+    return (freq, slot);
+  }
+
+  static String _encodeFreqAndSlot(FrequencyType f, TimeOfDaySlot s) =>
+      s == TimeOfDaySlot.anytime ? f.name : '${f.name}:${s.name}';
+
+  Habit _toHabit(HabitRow r) {
+    final (freq, slot) = _parseFreqAndSlot(r.frequencyType);
+    return Habit(
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      icon: r.icon,
+      color: r.color,
+      frequencyType: freq,
+      frequencyDays: r.frequencyDays.isEmpty
+          ? {}
+          : r.frequencyDays.split(',').map(int.parse).toSet(),
+      targetPerWeek: r.targetPerWeek,
+      timeOfDay: slot,
+      sortOrder: r.sortOrder,
+      createdAt: parseIso(r.createdAt),
+      archivedAt: r.archivedAt == null ? null : parseIso(r.archivedAt!),
+    );
+  }
 
   Stream<List<Habit>> _watch(Expression<bool> Function($HabitsTable) where) {
     final q = _db.select(_db.habits)
@@ -90,7 +111,7 @@ class HabitRepository {
         description: Value(d.description),
         icon: Value(d.icon),
         color: Value(d.color),
-        frequencyType: Value(d.frequencyType.name),
+        frequencyType: Value(_encodeFreqAndSlot(d.frequencyType, d.timeOfDay)),
         frequencyDays: Value((d.frequencyDays.toList()..sort()).join(',')),
         targetPerWeek: Value(d.targetPerWeek),
       );
@@ -183,19 +204,23 @@ class HabitRepository {
     return const JsonEncoder.withIndent('  ').convert({
       'habits': [
         for (final h in habits)
-          {
-            'id': h.id,
-            'name': h.name,
-            'description': h.description,
-            'icon': h.icon,
-            'color': h.color,
-            'frequencyType': h.frequencyType,
-            'frequencyDays': h.frequencyDays,
-            'targetPerWeek': h.targetPerWeek,
-            'sortOrder': h.sortOrder,
-            'createdAt': h.createdAt,
-            'archivedAt': h.archivedAt,
-          }
+          () {
+            final (freq, slot) = _parseFreqAndSlot(h.frequencyType);
+            return {
+              'id': h.id,
+              'name': h.name,
+              'description': h.description,
+              'icon': h.icon,
+              'color': h.color,
+              'frequencyType': freq.name,
+              'timeOfDay': slot.name,
+              'frequencyDays': h.frequencyDays,
+              'targetPerWeek': h.targetPerWeek,
+              'sortOrder': h.sortOrder,
+              'createdAt': h.createdAt,
+              'archivedAt': h.archivedAt,
+            };
+          }()
       ],
       'logs': [
         for (final l in logs)
@@ -214,6 +239,127 @@ class HabitRepository {
             'enabled': r.enabled,
           }
       ],
+    });
+  }
+
+  static String _csvCell(String? raw) {
+    if (raw == null || raw.isEmpty) return '';
+    final safe = RegExp(r'^[=+\-@]').hasMatch(raw) ? "'$raw" : raw;
+    if (safe.contains(',') || safe.contains('"') || safe.contains('\n')) {
+      return '"${safe.replaceAll('"', '""')}"';
+    }
+    return safe;
+  }
+
+  Future<String> exportCsv() async {
+    final habits = await _db.select(_db.habits).get();
+    final logs = await _db.select(_db.habitLogs).get();
+    final byId = {for (final h in habits) h.id: h};
+    final buf = StringBuffer(
+      'habit_id,habit_name,frequency_type,time_of_day,date,completed,note\n',
+    );
+    for (final l in logs) {
+      final h = byId[l.habitId];
+      if (h == null) continue;
+      final (freq, slot) = _parseFreqAndSlot(h.frequencyType);
+      buf.writeln([
+        '${h.id}',
+        _csvCell(h.name),
+        freq.name,
+        slot.name,
+        l.date,
+        '${l.completed}',
+        _csvCell(l.note),
+      ].join(','));
+    }
+    return buf.toString();
+  }
+
+  Future<int> importJson(String rawJson) async {
+    final Object? decoded = jsonDecode(rawJson);
+    if (decoded is! Map<String, dynamic> || decoded['habits'] is! List) {
+      throw const FormatException('Invalid backup JSON');
+    }
+    final rawHabits = decoded['habits'] as List;
+    final rawLogs = (decoded['logs'] as List?) ?? const [];
+    final rawReminders = (decoded['reminders'] as List?) ?? const [];
+
+    return _db.transaction(() async {
+      await clearAll();
+      final idMap = <int, int>{};
+      for (var i = 0; i < rawHabits.length; i++) {
+        final item = rawHabits[i];
+        if (item is! Map<String, dynamic>) {
+          throw const FormatException('Invalid habit entry');
+        }
+        final oldId = (item['id'] as num?)?.toInt() ?? (i + 1);
+        final name = (item['name'] as String?)?.trim() ?? '';
+        if (name.isEmpty || name.length > 40) {
+          throw const FormatException('Invalid habit name');
+        }
+        final rawFreq = (item['frequencyType'] as String?) ?? 'daily';
+        final (freq, legacySlot) = _parseFreqAndSlot(rawFreq);
+        final slotName = item['timeOfDay'] as String?;
+        final slot = slotName != null
+            ? TimeOfDaySlot.values.firstWhere(
+                (s) => s.name == slotName,
+                orElse: () => TimeOfDaySlot.anytime,
+              )
+            : legacySlot;
+        final createdIso = (item['createdAt'] as String?) ?? '2026-01-01';
+        parseIso(createdIso);
+        final archivedIso = item['archivedAt'] as String?;
+        if (archivedIso != null) parseIso(archivedIso);
+
+        final newId = await _db.into(_db.habits).insert(
+              HabitsCompanion.insert(
+                name: name,
+                description: Value(item['description'] as String?),
+                icon: (item['icon'] as String?) ?? 'check',
+                color: (item['color'] as num?)?.toInt() ?? 0xFF2E6F40,
+                frequencyType: _encodeFreqAndSlot(freq, slot),
+                frequencyDays: Value((item['frequencyDays'] as String?) ?? ''),
+                targetPerWeek: Value((item['targetPerWeek'] as num?)?.toInt()),
+                sortOrder: (item['sortOrder'] as num?)?.toInt() ?? i,
+                createdAt: createdIso,
+                archivedAt: Value(archivedIso),
+              ),
+            );
+        idMap[oldId] = newId;
+      }
+
+      for (final item in rawLogs) {
+        if (item is! Map<String, dynamic>) continue;
+        final newHabitId = idMap[(item['habitId'] as num?)?.toInt()];
+        final dateIso = item['date'] as String?;
+        if (newHabitId == null || dateIso == null) continue;
+        parseIso(dateIso);
+        await _db.into(_db.habitLogs).insert(
+              HabitLogsCompanion.insert(
+                habitId: newHabitId,
+                date: dateIso,
+                completed: (item['completed'] as bool?) ?? false,
+                note: Value(item['note'] as String?),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+      }
+
+      for (final item in rawReminders) {
+        if (item is! Map<String, dynamic>) continue;
+        final newHabitId = idMap[(item['habitId'] as num?)?.toInt()];
+        final timeStr = item['time'] as String?;
+        if (newHabitId == null || timeStr == null) continue;
+        ReminderTime.fromHm(timeStr);
+        await _db.into(_db.reminders).insert(
+              RemindersCompanion.insert(
+                habitId: newHabitId,
+                time: timeStr,
+                enabled: Value((item['enabled'] as bool?) ?? true),
+              ),
+            );
+      }
+      return idMap.length;
     });
   }
 

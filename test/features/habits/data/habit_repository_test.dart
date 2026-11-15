@@ -109,4 +109,71 @@ void main() {
     expect(await db.select(db.habitLogs).get(), isEmpty);
     expect(await db.select(db.reminders).get(), isEmpty);
   });
+
+  test('timeOfDay round-trips on create and update', () async {
+    const morningDraft = HabitDraft(
+      name: 'Lari pagi',
+      icon: 'run',
+      color: 0xFF2E6F40,
+      frequencyType: FrequencyType.daily,
+      timeOfDay: TimeOfDaySlot.morning,
+    );
+    final id = await repo.create(morningDraft, createdAt: d(2026, 11, 1));
+    expect((await repo.getHabit(id))!.timeOfDay, TimeOfDaySlot.morning);
+    await repo.update(
+      id,
+      const HabitDraft(
+        name: 'Lari sore',
+        icon: 'run',
+        color: 0xFF2E6F40,
+        frequencyType: FrequencyType.daily,
+        timeOfDay: TimeOfDaySlot.evening,
+      ),
+    );
+    expect((await repo.getHabit(id))!.timeOfDay, TimeOfDaySlot.evening);
+  });
+
+  test('exportCsv formats habits and logs and sanitizes formula prefixes', () async {
+    final id = await repo.create(draft, createdAt: d(2026, 11, 1));
+    await repo.setCompletion(id, d(2026, 11, 5), true, today: d(2026, 11, 5));
+    await repo.setNote(id, d(2026, 11, 5), '=SUM(1,2)', today: d(2026, 11, 5));
+    final csv = await repo.exportCsv();
+    expect(csv, contains('habit_id,habit_name,frequency_type,time_of_day,date,completed,note'));
+    expect(csv, contains('Minum air'));
+    expect(csv, contains("'=SUM(1,2)"));
+  });
+
+  test('importJson restores exported habits, logs, and reminders and rejects bad input', () async {
+    final id = await repo.create(
+      const HabitDraft(
+        name: 'Meditasi',
+        icon: 'self',
+        color: 0xFF2E6F40,
+        frequencyType: FrequencyType.specificDays,
+        frequencyDays: {1, 3, 5},
+        timeOfDay: TimeOfDaySlot.morning,
+      ),
+      createdAt: d(2026, 11, 1),
+      reminders: [const ReminderTime(6, 30)],
+    );
+    await repo.setCompletion(id, d(2026, 11, 2), true, today: d(2026, 11, 5));
+    await repo.setNote(id, d(2026, 11, 2), 'Tenang', today: d(2026, 11, 5));
+    final backup = await repo.exportJson();
+
+    await repo.clearAll();
+    expect(await repo.watchActive().first, isEmpty);
+
+    final count = await repo.importJson(backup);
+    expect(count, 1);
+    final restored = (await repo.watchActive().first).single;
+    expect(restored.name, 'Meditasi');
+    expect(restored.timeOfDay, TimeOfDaySlot.morning);
+    expect(restored.frequencyDays, {1, 3, 5});
+    final logs = await repo.watchLogs(restored.id).first;
+    expect(logs.single.completed, true);
+    expect(logs.single.note, 'Tenang');
+    expect((await repo.remindersFor(restored.id)).single.toHm(), '06:30');
+
+    expect(() => repo.importJson('not-json'), throwsFormatException);
+  });
 }

@@ -332,4 +332,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingStart => 'Start tracking habits';
+
+  @override
+  String get timeOfDaySectionLabel => 'Time of day';
+
+  @override
+  String get timeAnytime => 'Anytime';
+
+  @override
+  String get timeMorning => 'Morning';
+
+  @override
+  String get timeAfternoon => 'Afternoon';
+
+  @override
+  String get timeEvening => 'Evening';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get dailyCelebration =>
+      '100% of today\'s habits done! Keep the momentum going.';
+
+  @override
+  String get badgesTitle => 'Achievement badges';
+
+  @override
+  String badgeDays(int count, String unit) {
+    return '$count $unit';
+  }
+
+  @override
+  String get weeklyRecapTitle => 'This week\'s recap';
+
+  @override
+  String get weeklyRecapCheckIns => 'Completed this week';
+
+  @override
+  String get weeklyRecapPerfectDays => 'Perfect days';
+
+  @override
+  String get weeklyRecapTopHabit => 'Top habit';
+
+  @override
+  String get weeklyRecapNoTop => 'None yet';
+
+  @override
+  String get exportCsv => 'Export data (CSV)';
+
+  @override
+  String get exportCsvCopy => 'Copy CSV';
+
+  @override
+  String get exportCsvCopied => 'CSV data copied to clipboard';
+
+  @override
+  String get importJson => 'Import data (JSON)';
+
+  @override
+  String get importJsonHint => 'Paste JSON backup text here...';
+
+  @override
+  String get importJsonConfirm => 'Restore';
+
+  @override
+  String importJsonSuccess(int count) {
+    return 'Restored $count habits';
+  }
+
+  @override
+  String get importJsonError => 'Invalid JSON format';
 }
