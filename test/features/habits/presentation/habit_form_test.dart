@@ -11,6 +11,8 @@ import 'package:rutin/features/habits/data/habit_repository.dart';
 import 'package:rutin/features/habits/domain/habit.dart';
 import 'package:rutin/features/habits/presentation/archive_screen.dart';
 import 'package:rutin/features/habits/presentation/habit_form_screen.dart';
+import 'package:rutin/features/reminders/data/notification_service.dart';
+import 'package:rutin/features/reminders/domain/reminder_planner.dart';
 
 DateTime d(int y, int m, int day) => DateTime.utc(y, m, day);
 
@@ -155,6 +157,62 @@ void main() {
     expect(spy.deleted, [7]);
   });
 
+  testWidgets('delete after pushing from detail navigates to home instead of popping to detail', (t) async {
+    final spy = SpyRepo();
+    final router = GoRouter(initialLocation: '/habit/7', routes: [
+      GoRoute(path: '/', builder: (_, _) => const Text('home')),
+      GoRoute(path: '/habit/:id', builder: (c, _) => ElevatedButton(
+        onPressed: () => c.push('/habit/7/edit'),
+        child: const Text('detail'),
+      )),
+      GoRoute(path: '/habit/:id/edit', builder: (_, s) => HabitFormScreen(habitId: int.parse(s.pathParameters['id']!))),
+    ]);
+    await t.pumpWidget(ProviderScope(
+      overrides: [
+        clockProvider.overrideWithValue(() => DateTime(2026, 11, 15)),
+        habitRepositoryProvider.overrideWithValue(spy),
+      ],
+      child: MaterialApp.router(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    ));
+    await t.pumpAndSettle();
+    await t.tap(find.text('detail'));
+    await t.pumpAndSettle();
+    await t.tap(find.byKey(const Key('delete')));
+    await t.pumpAndSettle();
+    await t.tap(find.byKey(const Key('confirm-delete')));
+    await t.pumpAndSettle();
+    expect(find.text('home'), findsOneWidget);
+  });
+
+  testWidgets('shows explanation snackbar when exact alarm permission is denied', (t) async {
+    final spy = SpyRepo();
+    await t.pumpWidget(ProviderScope(
+      overrides: [
+        clockProvider.overrideWithValue(() => DateTime(2026, 11, 15)),
+        habitRepositoryProvider.overrideWithValue(spy),
+        notificationServiceProvider.overrideWithValue(_ExactDeniedService()),
+      ],
+      child: MaterialApp.router(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: GoRouter(initialLocation: '/habit/new', routes: [
+          GoRoute(path: '/', builder: (_, _) => const Scaffold(body: Text('home'))),
+          GoRoute(path: '/habit/new', builder: (_, _) => const HabitFormScreen()),
+        ]),
+      ),
+    ));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('name')), 'Minum air');
+    await save(t);
+    expect(find.textContaining('Exact alarm'), findsOneWidget);
+  });
+
   testWidgets('archive from edit; archive screen lists and restores', (t) async {
     final spy = SpyRepo();
     await t.pumpWidget(app(spy, '/habit/7/edit'));
@@ -170,4 +228,22 @@ void main() {
     await t.tap(find.byKey(const Key('restore-7')));
     expect(spy2.restored, [7]);
   });
+}
+
+class _DummyGateway implements NotificationGateway {
+  @override
+  Future<bool> requestPermission() async => true;
+  @override
+  Future<bool> canScheduleExact() async => false;
+  @override
+  Future<void> cancelAll() async {}
+  @override
+  Future<void> schedule(PlannedNotification n, {bool exact = true}) async {}
+}
+
+class _ExactDeniedService extends NotificationService {
+  _ExactDeniedService() : super(_DummyGateway());
+  @override
+  Future<ReminderSyncResult> sync(List<Habit> activeHabits, List<ReminderRow> reminders) async =>
+      ReminderSyncResult.exactAlarmDenied;
 }

@@ -94,9 +94,14 @@ class _State extends ConsumerState<HabitFormScreen> {
     }
     final syncRes = await syncReminders(ref);
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     if (syncRes == ReminderSyncResult.permissionDenied) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).permDenied)),
+        SnackBar(content: Text(l10n.permDenied)),
+      );
+    } else if (syncRes == ReminderSyncResult.exactAlarmDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.permExactDenied)),
       );
     }
     _leave();
@@ -120,7 +125,7 @@ class _State extends ConsumerState<HabitFormScreen> {
     if (ok == true) {
       await ref.read(habitRepositoryProvider).delete(widget.habitId!);
       await syncReminders(ref);
-      if (mounted) _leave();
+      if (mounted) context.go('/');
     }
   }
 

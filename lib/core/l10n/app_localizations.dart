@@ -362,6 +362,12 @@ abstract class AppLocalizations {
   /// **'Izin notifikasi ditolak; pengingat tidak akan berbunyi.'**
   String get permDenied;
 
+  /// No description provided for @permExactDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin alarm presisi ditolak; pengingat mungkin sedikit terlambat.'**
+  String get permExactDenied;
+
   /// No description provided for @settingsTitle.
   ///
   /// In id, this message translates to:

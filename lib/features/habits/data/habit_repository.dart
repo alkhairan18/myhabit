@@ -137,12 +137,14 @@ class HabitRepository {
 
   Future<void> setCompletion(int habitId, DateTime date, bool completed,
       {required DateTime today}) async {
-    if (date.isAfter(today)) throw FutureDateError();
+    final d = dateOnly(date);
+    final t = dateOnly(today);
+    if (d.isAfter(t)) throw FutureDateError();
     final habit = await getHabit(habitId);
-    if (habit == null || date.isBefore(habit.createdAt)) throw BeforeCreationError();
+    if (habit == null || d.isBefore(habit.createdAt)) throw BeforeCreationError();
     await _db.into(_db.habitLogs).insert(
           HabitLogsCompanion.insert(
-              habitId: habitId, date: toIso(date), completed: completed),
+              habitId: habitId, date: toIso(d), completed: completed),
           onConflict: DoUpdate((_) => HabitLogsCompanion(completed: Value(completed)),
               target: [_db.habitLogs.habitId, _db.habitLogs.date]),
         );

@@ -47,6 +47,7 @@
   "permBody": "Rutin memakai notifikasi lokal agar kamu diingatkan tepat pada jam yang kamu pilih.",
   "permAllow": "Izinkan",
   "permDenied": "Izin notifikasi ditolak; pengingat tidak akan berbunyi.",
+  "permExactDenied": "Izin alarm presisi ditolak; pengingat mungkin sedikit terlambat.",
   "settingsTitle": "Pengaturan",
   "themeLabel": "Tema",
   "themeSystem": "Mengikuti sistem",

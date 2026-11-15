@@ -12,6 +12,8 @@ void main() {
   test('daily not scheduled before createdAt', () {
     expect(isScheduledOn(h(FrequencyType.daily), DateTime.utc(2026, 11, 9)), false);
     expect(isScheduledOn(h(FrequencyType.daily), DateTime.utc(2026, 11, 10)), true);
+    // Local DateTime on creation day (e.g. UTC+8 midnight = previous UTC day) is still scheduled.
+    expect(isScheduledOn(h(FrequencyType.daily), DateTime(2026, 11, 10)), true);
   });
   test('specificDays Mon/Wed/Fri: Tue no, Wed yes', () {
     final x = h(FrequencyType.specificDays, days: {1, 3, 5});

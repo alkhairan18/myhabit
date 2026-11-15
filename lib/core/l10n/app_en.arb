@@ -44,6 +44,7 @@
   "permBody": "Rutin uses local notifications to remind you at the times you choose.",
   "permAllow": "Allow",
   "permDenied": "Notification permission denied; reminders will not fire.",
+  "permExactDenied": "Exact alarm permission denied; reminders may be slightly delayed.",
   "settingsTitle": "Settings",
   "themeLabel": "Theme",
   "themeSystem": "Follow system",

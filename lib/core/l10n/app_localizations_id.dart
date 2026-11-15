@@ -151,6 +151,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Izin notifikasi ditolak; pengingat tidak akan berbunyi.';
 
   @override
+  String get permExactDenied =>
+      'Izin alarm presisi ditolak; pengingat mungkin sedikit terlambat.';
+
+  @override
   String get settingsTitle => 'Pengaturan';
 
   @override

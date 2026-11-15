@@ -151,6 +151,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notification permission denied; reminders will not fire.';
 
   @override
+  String get permExactDenied =>
+      'Exact alarm permission denied; reminders may be slightly delayed.';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

@@ -37,10 +37,12 @@ void main() {
         throwsA(isA<FutureDateError>()));
   });
 
-  test('date before createdAt throws BeforeCreationError', () async {
+  test('date before createdAt throws BeforeCreationError; local creation date succeeds', () async {
     final id = await repo.create(draft, createdAt: d(2026, 11, 3));
     expect(() => repo.setCompletion(id, d(2026, 11, 2), true, today: d(2026, 11, 5)),
         throwsA(isA<BeforeCreationError>()));
+    await repo.setCompletion(id, DateTime(2026, 11, 3), true, today: DateTime(2026, 11, 5));
+    expect((await repo.watchLogs(id).first).length, 1);
   });
 
   test('archive moves habit, keeps logs', () async {
