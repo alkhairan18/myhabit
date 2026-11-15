@@ -48,3 +48,17 @@ app.*.map.json
 .widget_preview/
 
 .superpowers/
+
+# Secrets, signing keys, local environment, and binary artifacts
+.env
+.env.*
+*.pem
+*.key
+*.keystore
+*.jks
+key.properties
+local.properties
+google-services.json
+GoogleService-Info.plist
+*.apk
+*.aab
