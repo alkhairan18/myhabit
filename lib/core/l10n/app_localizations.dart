@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// **'Mis. Minum air 8 gelas'**
   String get nameHint;
 
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan motivasi (opsional)'**
+  String get descriptionLabel;
+
+  /// No description provided for @descriptionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mis. Supaya tubuh tetap bugar sepanjang hari'**
+  String get descriptionHint;
+
   /// No description provided for @iconSectionLabel.
   ///
   /// In id, this message translates to:
@@ -404,6 +416,48 @@ abstract class AppLocalizations {
   /// **'Ubah'**
   String get edit;
 
+  /// No description provided for @dailyNoteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan harian'**
+  String get dailyNoteTitle;
+
+  /// No description provided for @dailyNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis catatan singkat untuk hari ini...'**
+  String get dailyNoteHint;
+
+  /// No description provided for @saveNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan catatan'**
+  String get saveNote;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Statistik'**
+  String get statsTitle;
+
+  /// No description provided for @overallActiveHabits.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan aktif'**
+  String get overallActiveHabits;
+
+  /// No description provided for @overallWeeklyTrend.
+  ///
+  /// In id, this message translates to:
+  /// **'Performa 7 hari terakhir'**
+  String get overallWeeklyTrend;
+
+  /// No description provided for @overallMonthlyTrend.
+  ///
+  /// In id, this message translates to:
+  /// **'Performa 4 minggu terakhir'**
+  String get overallMonthlyTrend;
+
   /// No description provided for @permTitle.
   ///
   /// In id, this message translates to:
@@ -464,6 +518,96 @@ abstract class AppLocalizations {
   /// **'Gelap (Pinus pekat)'**
   String get themeDark;
 
+  /// No description provided for @weekStartLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Awal minggu'**
+  String get weekStartLabel;
+
+  /// No description provided for @weekStartMonday.
+  ///
+  /// In id, this message translates to:
+  /// **'Senin'**
+  String get weekStartMonday;
+
+  /// No description provided for @weekStartSunday.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu'**
+  String get weekStartSunday;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get languageLabel;
+
+  /// No description provided for @langSystem.
+  ///
+  /// In id, this message translates to:
+  /// **'Sistem'**
+  String get langSystem;
+
+  /// No description provided for @langId.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa Indonesia'**
+  String get langId;
+
+  /// No description provided for @langEn.
+  ///
+  /// In id, this message translates to:
+  /// **'English'**
+  String get langEn;
+
+  /// No description provided for @dataSectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Data & cadangan'**
+  String get dataSectionLabel;
+
+  /// No description provided for @exportJson.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor data (JSON)'**
+  String get exportJson;
+
+  /// No description provided for @exportCopy.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin JSON'**
+  String get exportCopy;
+
+  /// No description provided for @exportCopied.
+  ///
+  /// In id, this message translates to:
+  /// **'Data JSON disalin ke papan klip'**
+  String get exportCopied;
+
+  /// No description provided for @clearAllData.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data'**
+  String get clearAllData;
+
+  /// No description provided for @clearAllTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data?'**
+  String get clearAllTitle;
+
+  /// No description provided for @clearAllBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Seluruh kebiasaan, catatan selesai, dan pengingat akan dihapus permanen.'**
+  String get clearAllBody;
+
+  /// No description provided for @clearAllDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua data telah dihapus'**
+  String get clearAllDone;
+
   /// No description provided for @privacyNote.
   ///
   /// In id, this message translates to:
@@ -499,6 +643,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Berfungsi penuh tanpa internet dan tanpa perlu membuat akun'**
   String get onboardingPillar3;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStep2Title.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat pola dan jaga konsistensi'**
+  String get onboardingStep2Title;
+
+  /// No description provided for @onboardingStep2Body.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantau streak harian atau mingguan, tinjau heatmap 3 bulan, dan atur pengingat lokal sesuai jadwal Anda.'**
+  String get onboardingStep2Body;
+
+  /// No description provided for @onboardingStep3Title.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai dengan contoh kebiasaan'**
+  String get onboardingStep3Title;
+
+  /// No description provided for @onboardingStep3Body.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kebiasaan awal di bawah ini untuk langsung ditambahkan, atau mulai dari kosong.'**
+  String get onboardingStep3Body;
+
+  /// No description provided for @starterWater.
+  ///
+  /// In id, this message translates to:
+  /// **'Minum air 8 gelas'**
+  String get starterWater;
+
+  /// No description provided for @starterRead.
+  ///
+  /// In id, this message translates to:
+  /// **'Membaca 20 menit'**
+  String get starterRead;
+
+  /// No description provided for @starterExercise.
+  ///
+  /// In id, this message translates to:
+  /// **'Olahraga ringan'**
+  String get starterExercise;
 
   /// No description provided for @onboardingStart.
   ///

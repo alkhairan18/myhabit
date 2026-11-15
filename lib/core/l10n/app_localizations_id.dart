@@ -62,6 +62,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get nameHint => 'Mis. Minum air 8 gelas';
 
   @override
+  String get descriptionLabel => 'Catatan motivasi (opsional)';
+
+  @override
+  String get descriptionHint => 'Mis. Supaya tubuh tetap bugar sepanjang hari';
+
+  @override
   String get iconSectionLabel => 'Ikon';
 
   @override
@@ -173,6 +179,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get edit => 'Ubah';
 
   @override
+  String get dailyNoteTitle => 'Catatan harian';
+
+  @override
+  String get dailyNoteHint => 'Tulis catatan singkat untuk hari ini...';
+
+  @override
+  String get saveNote => 'Simpan catatan';
+
+  @override
+  String get statsTitle => 'Statistik';
+
+  @override
+  String get overallActiveHabits => 'Kebiasaan aktif';
+
+  @override
+  String get overallWeeklyTrend => 'Performa 7 hari terakhir';
+
+  @override
+  String get overallMonthlyTrend => 'Performa 4 minggu terakhir';
+
+  @override
   String get permTitle => 'Aktifkan pengingat?';
 
   @override
@@ -206,6 +233,52 @@ class AppLocalizationsId extends AppLocalizations {
   String get themeDark => 'Gelap (Pinus pekat)';
 
   @override
+  String get weekStartLabel => 'Awal minggu';
+
+  @override
+  String get weekStartMonday => 'Senin';
+
+  @override
+  String get weekStartSunday => 'Minggu';
+
+  @override
+  String get languageLabel => 'Bahasa';
+
+  @override
+  String get langSystem => 'Sistem';
+
+  @override
+  String get langId => 'Bahasa Indonesia';
+
+  @override
+  String get langEn => 'English';
+
+  @override
+  String get dataSectionLabel => 'Data & cadangan';
+
+  @override
+  String get exportJson => 'Ekspor data (JSON)';
+
+  @override
+  String get exportCopy => 'Salin JSON';
+
+  @override
+  String get exportCopied => 'Data JSON disalin ke papan klip';
+
+  @override
+  String get clearAllData => 'Hapus semua data';
+
+  @override
+  String get clearAllTitle => 'Hapus semua data?';
+
+  @override
+  String get clearAllBody =>
+      'Seluruh kebiasaan, catatan selesai, dan pengingat akan dihapus permanen.';
+
+  @override
+  String get clearAllDone => 'Semua data telah dihapus';
+
+  @override
   String get privacyNote =>
       '100% disimpan di perangkat ini. Tanpa akun, tanpa pelacak.';
 
@@ -227,6 +300,35 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get onboardingPillar3 =>
       'Berfungsi penuh tanpa internet dan tanpa perlu membuat akun';
+
+  @override
+  String get onboardingSkip => 'Lewati';
+
+  @override
+  String get onboardingNext => 'Lanjut';
+
+  @override
+  String get onboardingStep2Title => 'Lihat pola dan jaga konsistensi';
+
+  @override
+  String get onboardingStep2Body =>
+      'Pantau streak harian atau mingguan, tinjau heatmap 3 bulan, dan atur pengingat lokal sesuai jadwal Anda.';
+
+  @override
+  String get onboardingStep3Title => 'Mulai dengan contoh kebiasaan';
+
+  @override
+  String get onboardingStep3Body =>
+      'Pilih kebiasaan awal di bawah ini untuk langsung ditambahkan, atau mulai dari kosong.';
+
+  @override
+  String get starterWater => 'Minum air 8 gelas';
+
+  @override
+  String get starterRead => 'Membaca 20 menit';
+
+  @override
+  String get starterExercise => 'Olahraga ringan';
 
   @override
   String get onboardingStart => 'Mulai mencatat kebiasaan';

@@ -82,6 +82,32 @@ class ThemeModeNotifier extends Notifier<AppThemeMode> {
 final themeModeProvider =
     NotifierProvider<ThemeModeNotifier, AppThemeMode>(ThemeModeNotifier.new);
 
+class WeekStartsOnNotifier extends Notifier<int> {
+  @override
+  int build() => ref.read(settingsRepositoryProvider).weekStartsOn;
+
+  Future<void> set(int day) async {
+    state = day;
+    await ref.read(settingsRepositoryProvider).setWeekStartsOn(day);
+  }
+}
+
+final weekStartsOnProvider =
+    NotifierProvider<WeekStartsOnNotifier, int>(WeekStartsOnNotifier.new);
+
+class LocaleCodeNotifier extends Notifier<String?> {
+  @override
+  String? build() => ref.read(settingsRepositoryProvider).localeCode;
+
+  Future<void> set(String? code) async {
+    state = code;
+    await ref.read(settingsRepositoryProvider).setLocaleCode(code);
+  }
+}
+
+final localeCodeProvider =
+    NotifierProvider<LocaleCodeNotifier, String?>(LocaleCodeNotifier.new);
+
 /// Looks in active and archived lists so archived habits stay viewable.
 final habitByIdProvider = Provider.family<Habit?, int>((ref, id) {
   final all = [
@@ -110,8 +136,16 @@ final notificationServiceProvider =
 
 Future<ReminderSyncResult> syncReminders(WidgetRef ref) async {
   final repo = ref.read(habitRepositoryProvider);
+  final today = ref.read(todayProvider);
+  final logsToday = await repo.watchLogsOn(today).first;
+  final doneToday = {
+    for (final l in logsToday)
+      if (l.completed) l.habitId
+  };
   return ref.read(notificationServiceProvider).sync(
         await repo.watchActive().first,
         await repo.allEnabledReminders(),
+        todayWeekday: today.weekday,
+        completedTodayHabitIds: doneToday,
       );
 }

@@ -15,4 +15,13 @@ class SettingsRepository {
   bool get onboardingDone => _prefs.getBool('onboardingDone') ?? false;
 
   Future<void> setOnboardingDone() => _prefs.setBool('onboardingDone', true);
+
+  int get weekStartsOn => _prefs.getInt('weekStartsOn') ?? DateTime.monday;
+
+  Future<void> setWeekStartsOn(int day) => _prefs.setInt('weekStartsOn', day);
+
+  String? get localeCode => _prefs.getString('localeCode');
+
+  Future<void> setLocaleCode(String? code) =>
+      code == null ? _prefs.remove('localeCode') : _prefs.setString('localeCode', code);
 }

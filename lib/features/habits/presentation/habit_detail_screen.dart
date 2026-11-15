@@ -14,18 +14,27 @@ class HabitDetailScreen extends ConsumerWidget {
   const HabitDetailScreen({super.key, required this.habitId});
   final int habitId;
 
+  int _safeWeekStart(WidgetRef ref) {
+    try {
+      return ref.watch(weekStartsOnProvider);
+    } catch (_) {
+      return DateTime.monday;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final habit = ref.watch(habitByIdProvider(habitId));
     if (habit == null) return const Scaffold(body: SizedBox.shrink());
     final today = ref.watch(todayProvider);
+    final weekStartsOn = _safeWeekStart(ref);
     final done = <DateTime>{
       for (final l in ref.watch(logsProvider(habitId)).value ?? const [])
         if (l.completed) l.date
     };
-    final streak = calculateStreak(habit, done, today);
-    final stats = calculateStats(habit, done, today);
+    final streak = calculateStreak(habit, done, today, weekStartsOn: weekStartsOn);
+    final stats = calculateStats(habit, done, today, weekStartsOn: weekStartsOn);
     final cs = Theme.of(context).colorScheme;
     final color = Color(habit.color);
     final unit = habit.frequencyType == FrequencyType.timesPerWeek
@@ -205,7 +214,12 @@ class HabitDetailScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(rCard),
               border: Border.all(color: cs.outlineVariant),
             ),
-            child: Heatmap(habit: habit, completed: done, today: today),
+            child: Heatmap(
+              habit: habit,
+              completed: done,
+              today: today,
+              weekStartsOn: weekStartsOn,
+            ),
           ),
         ],
       ),

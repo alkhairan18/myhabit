@@ -19,8 +19,10 @@ class PlannedNotification {
 
 List<PlannedNotification> planNotifications(
   List<Habit> activeHabits,
-  List<ReminderRow> reminders,
-) {
+  List<ReminderRow> reminders, {
+  int? todayWeekday,
+  Set<int> completedTodayHabitIds = const {},
+}) {
   final byId = {
     for (final h in activeHabits)
       if (h.archivedAt == null) h.id: h
@@ -34,6 +36,11 @@ List<PlannedNotification> planNotifications(
         : [1, 2, 3, 4, 5, 6, 7];
     final mins = r.time.hour * 60 + r.time.minute;
     for (final wd in days) {
+      if (todayWeekday != null &&
+          wd == todayWeekday &&
+          completedTodayHabitIds.contains(h.id)) {
+        continue;
+      }
       // Deterministic 31-bit id from (habitId, weekday, minutes).
       final id = ((h.id * 10080) + (wd * 1440) + mins) & 0x7fffffff;
       out.add(PlannedNotification(

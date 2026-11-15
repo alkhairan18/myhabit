@@ -16,22 +16,73 @@ import 'week_strip.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  Future<void> _editNote(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    Habit habit,
+    DateTime selected,
+    DateTime today,
+    String? currentNote,
+  ) async {
+    final ctrl = TextEditingController(text: currentNote ?? '');
+    final saved = await showDialog<String>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(l10n.dailyNoteTitle),
+        content: TextField(
+          key: const Key('note-input'),
+          controller: ctrl,
+          maxLength: 120,
+          decoration: InputDecoration(hintText: l10n.dailyNoteHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            key: const Key('save-note'),
+            onPressed: () => Navigator.pop(c, ctrl.text),
+            child: Text(l10n.saveNote),
+          ),
+        ],
+      ),
+    );
+    if (saved != null) {
+      await ref
+          .read(habitRepositoryProvider)
+          .setNote(habit.id, selected, saved, today: today);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final today = ref.watch(todayProvider);
     final selected = ref.watch(selectedDateProvider);
     final habitsAsync = ref.watch(activeHabitsProvider);
-    final done = (ref.watch(logsOnDateProvider(selected)).value ?? [])
-        .where((l) => l.completed)
-        .map((l) => l.habitId)
-        .toSet();
+    final logs = ref.watch(logsOnDateProvider(selected)).value ?? [];
+    final done = {
+      for (final l in logs)
+        if (l.completed) l.habitId
+    };
+    final notes = {
+      for (final l in logs)
+        if (l.note != null && l.note!.isNotEmpty) l.habitId: l.note!
+    };
     final habits = habitsAsync.value ?? const [];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.appName),
         actions: [
+          IconButton(
+            key: const Key('open-stats'),
+            tooltip: l10n.statsTitle,
+            icon: const Icon(Icons.bar_chart_rounded),
+            onPressed: () => context.push('/stats'),
+          ),
           IconButton(
             tooltip: l10n.archiveTitle,
             icon: const Icon(Icons.inventory_2_outlined),
@@ -58,25 +109,35 @@ class HomeScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (all) => all.isEmpty
             ? _Empty(l10n: l10n)
-            : _body(context, ref, l10n, all, today, selected, done),
+            : _body(context, ref, l10n, all, today, selected, done, notes),
       ),
     );
   }
 
-  Widget _body(BuildContext context, WidgetRef ref, AppLocalizations l10n,
-      List<Habit> all, DateTime today, DateTime selected, Set<int> done) {
+  Widget _body(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    List<Habit> all,
+    DateTime today,
+    DateTime selected,
+    Set<int> done,
+    Map<int, String> notes,
+  ) {
     final scheduled = [for (final h in all) if (isScheduledOn(h, selected)) h];
     final p = todayProgress(scheduled, done);
     final ratio = p.target == 0 ? 0.0 : p.done / p.target;
     final allDone = p.target > 0 && p.done == p.target;
     final locale = Localizations.localeOf(context).toString();
     final cs = Theme.of(context).colorScheme;
+    final weekStartsOn = ref.watch(weekStartsOnProvider);
 
     return Column(
       children: [
         WeekStrip(
           selected: selected,
           today: today,
+          weekStartsOn: weekStartsOn,
           onSelect: ref.read(selectedDateProvider.notifier).select,
         ),
         Padding(
@@ -174,22 +235,36 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 )
-              : ListView(
+              : ReorderableListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                  children: [
-                    for (final h in scheduled)
-                      HabitCard(
-                        habit: h,
-                        completed: done.contains(h.id),
-                        onOpen: () => context.push('/habit/${h.id}'),
-                        onToggle: () {
-                          HapticFeedback.lightImpact();
-                          ref.read(habitRepositoryProvider).setCompletion(
-                              h.id, selected, !done.contains(h.id),
-                              today: today);
-                        },
-                      ),
-                  ],
+                  itemCount: scheduled.length,
+                  onReorderItem: (oldIndex, newIndex) {
+                    final ids = [for (final h in scheduled) h.id];
+                    final moved = ids.removeAt(oldIndex);
+                    ids.insert(newIndex, moved);
+                    ref.read(habitRepositoryProvider).reorder(ids);
+                  },
+                  itemBuilder: (context, index) {
+                    final h = scheduled[index];
+                    return HabitCard(
+                      key: ValueKey('habit-card-${h.id}'),
+                      habit: h,
+                      completed: done.contains(h.id),
+                      note: notes[h.id],
+                      onOpen: () => context.push('/habit/${h.id}'),
+                      onNote: () => _editNote(
+                          context, ref, l10n, h, selected, today, notes[h.id]),
+                      onToggle: () async {
+                        HapticFeedback.lightImpact();
+                        await ref.read(habitRepositoryProvider).setCompletion(
+                            h.id, selected, !done.contains(h.id),
+                            today: today);
+                        if (selected == today && context.mounted) {
+                          await syncReminders(ref);
+                        }
+                      },
+                    );
+                  },
                 ),
         ),
       ],

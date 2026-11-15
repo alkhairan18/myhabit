@@ -23,6 +23,7 @@ class HabitFormScreen extends ConsumerStatefulWidget {
 
 class _State extends ConsumerState<HabitFormScreen> {
   final _name = TextEditingController();
+  final _desc = TextEditingController();
   final _target = TextEditingController(text: '3');
   String _icon = habitIcons.keys.first;
   int _color = habitColors.first.toARGB32();
@@ -53,6 +54,7 @@ class _State extends ConsumerState<HabitFormScreen> {
       if (h != null) {
         _existing = h;
         _name.text = h.name;
+        _desc.text = h.description ?? '';
         _icon = h.icon;
         _color = h.color;
         _type = h.frequencyType;
@@ -68,6 +70,7 @@ class _State extends ConsumerState<HabitFormScreen> {
   @override
   void dispose() {
     _name.dispose();
+    _desc.dispose();
     _target.dispose();
     super.dispose();
   }
@@ -82,9 +85,10 @@ class _State extends ConsumerState<HabitFormScreen> {
       setState(() => _errors = errs);
       return;
     }
+    final descTrimmed = _desc.text.trim();
     final draft = HabitDraft(
       name: _name.text.trim(),
-      description: _existing?.description,
+      description: descTrimmed.isEmpty ? null : descTrimmed,
       icon: _icon,
       color: _color,
       frequencyType: _type,
@@ -215,6 +219,16 @@ class _State extends ConsumerState<HabitFormScreen> {
                         : _errors.contains(HabitError.nameTooLong)
                             ? l10n.errNameTooLong
                             : null,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  key: const Key('description'),
+                  controller: _desc,
+                  maxLength: 80,
+                  decoration: InputDecoration(
+                    labelText: l10n.descriptionLabel,
+                    hintText: l10n.descriptionHint,
                   ),
                 ),
                 sectionLabel(l10n.iconSectionLabel),

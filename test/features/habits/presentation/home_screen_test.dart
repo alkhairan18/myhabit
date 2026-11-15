@@ -19,15 +19,37 @@ DateTime d(int y, int m, int day) => DateTime.utc(y, m, day);
 class SpyRepo extends HabitRepository {
   SpyRepo() : super(AppDatabase(NativeDatabase.memory()));
   final calls = <(int, DateTime, bool)>[];
+  final notes = <(int, DateTime, String?)>[];
+  final reordered = <List<int>>[];
   @override
   Future<void> setCompletion(int habitId, DateTime date, bool completed,
       {required DateTime today}) async {
     calls.add((habitId, date, completed));
   }
+
+  @override
+  Future<void> setNote(int habitId, DateTime date, String? note,
+      {required DateTime today}) async {
+    notes.add((habitId, date, note));
+  }
+
+  @override
+  Future<void> reorder(List<int> habitIds) async {
+    reordered.add(habitIds);
+  }
+
+  @override
+  Stream<List<Habit>> watchActive() => Stream.value(const []);
+
+  @override
+  Stream<List<HabitLog>> watchLogsOn(DateTime date) => Stream.value(const []);
+
+  @override
+  Future<List<ReminderRow>> allEnabledReminders() async => const [];
 }
 
-Habit habit(int id, {String name = 'Minum air'}) => Habit(
-    id: id, name: name, icon: 'water', color: 0xFF1E88E5,
+Habit habit(int id, {String name = 'Minum air', String? description}) => Habit(
+    id: id, name: name, description: description, icon: 'water', color: 0xFF1E88E5,
     frequencyType: FrequencyType.daily, sortOrder: id, createdAt: d(2026, 1, 1));
 
 Widget app(List<Habit> habits, List<HabitLog> logs, SpyRepo spy, DateTime Function() clock) =>
@@ -35,6 +57,7 @@ Widget app(List<Habit> habits, List<HabitLog> logs, SpyRepo spy, DateTime Functi
       overrides: [
         clockProvider.overrideWithValue(clock),
         habitRepositoryProvider.overrideWithValue(spy),
+        weekStartsOnProvider.overrideWith(_FixedWeekStart.new),
         activeHabitsProvider.overrideWith((ref) => Stream.value(habits)),
         logsOnDateProvider.overrideWith((ref, date) => Stream.value(logs)),
       ],
@@ -48,6 +71,11 @@ Widget app(List<Habit> habits, List<HabitLog> logs, SpyRepo spy, DateTime Functi
         ]),
       ),
     );
+
+class _FixedWeekStart extends WeekStartsOnNotifier {
+  @override
+  int build() => DateTime.monday;
+}
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -136,6 +164,26 @@ void main() {
     await t.tap(find.byKey(const Key('day-2026-11-10')));
     expect(picked, [d(2026, 11, 10)]);
     h.dispose();
+  });
+
+  testWidgets('daily note button opens dialog and saves note (FR-16) and shows description (FR-07)', (t) async {
+    final spy = SpyRepo();
+    await t.pumpWidget(app(
+      [habit(1, description: 'Stay hydrated')],
+      [HabitLog(habitId: 1, date: d(2026, 11, 15), completed: true, note: 'Awal')],
+      spy,
+      () => now,
+    ));
+    await t.pump();
+    expect(find.textContaining('Stay hydrated'), findsOneWidget);
+    expect(find.text('Awal'), findsOneWidget);
+
+    await t.tap(find.byKey(const Key('note-1')));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('note-input')), '8 gelas selesai');
+    await t.tap(find.byKey(const Key('save-note')));
+    await t.pumpAndSettle();
+    expect(spy.notes, [(1, d(2026, 11, 15), '8 gelas selesai')]);
   });
 }
 

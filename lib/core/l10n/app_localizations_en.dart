@@ -62,6 +62,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameHint => 'e.g. Drink 8 glasses of water';
 
   @override
+  String get descriptionLabel => 'Motivation note (optional)';
+
+  @override
+  String get descriptionHint => 'e.g. Stay energized throughout the day';
+
+  @override
   String get iconSectionLabel => 'Icon';
 
   @override
@@ -173,6 +179,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit => 'Edit';
 
   @override
+  String get dailyNoteTitle => 'Daily note';
+
+  @override
+  String get dailyNoteHint => 'Write a short note for this day...';
+
+  @override
+  String get saveNote => 'Save note';
+
+  @override
+  String get statsTitle => 'Statistics';
+
+  @override
+  String get overallActiveHabits => 'Active habits';
+
+  @override
+  String get overallWeeklyTrend => 'Last 7 days performance';
+
+  @override
+  String get overallMonthlyTrend => 'Last 4 weeks performance';
+
+  @override
   String get permTitle => 'Enable reminders?';
 
   @override
@@ -206,6 +233,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark (Deep pine)';
 
   @override
+  String get weekStartLabel => 'Start of week';
+
+  @override
+  String get weekStartMonday => 'Monday';
+
+  @override
+  String get weekStartSunday => 'Sunday';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get langSystem => 'System';
+
+  @override
+  String get langId => 'Bahasa Indonesia';
+
+  @override
+  String get langEn => 'English';
+
+  @override
+  String get dataSectionLabel => 'Data & backup';
+
+  @override
+  String get exportJson => 'Export data (JSON)';
+
+  @override
+  String get exportCopy => 'Copy JSON';
+
+  @override
+  String get exportCopied => 'JSON data copied to clipboard';
+
+  @override
+  String get clearAllData => 'Delete all data';
+
+  @override
+  String get clearAllTitle => 'Delete all data?';
+
+  @override
+  String get clearAllBody =>
+      'All habits, completion logs, and reminders will be permanently deleted.';
+
+  @override
+  String get clearAllDone => 'All data deleted';
+
+  @override
   String get privacyNote =>
       '100% stored on this device. No account, no trackers.';
 
@@ -227,6 +300,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingPillar3 =>
       'Works completely offline with no account required';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingStep2Title => 'Spot patterns and stay consistent';
+
+  @override
+  String get onboardingStep2Body =>
+      'Track daily or weekly streaks, review your 3-month heatmap, and set local reminders on your schedule.';
+
+  @override
+  String get onboardingStep3Title => 'Start with starter habits';
+
+  @override
+  String get onboardingStep3Body =>
+      'Pick any starter habits below to add them right away, or start with a clean slate.';
+
+  @override
+  String get starterWater => 'Drink 8 glasses of water';
+
+  @override
+  String get starterRead => 'Read 20 minutes';
+
+  @override
+  String get starterExercise => 'Light exercise';
 
   @override
   String get onboardingStart => 'Start tracking habits';

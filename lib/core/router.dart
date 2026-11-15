@@ -6,6 +6,7 @@ import '../features/habits/presentation/archive_screen.dart';
 import '../features/habits/presentation/habit_detail_screen.dart';
 import '../features/habits/presentation/habit_form_screen.dart';
 import '../features/habits/presentation/home_screen.dart';
+import '../features/habits/presentation/overall_stats_screen.dart';
 import '../features/settings/onboarding_screen.dart';
 import '../features/settings/settings_screen.dart';
 
@@ -25,6 +26,7 @@ final routerProvider = Provider<GoRouter>((ref) => GoRouter(
         GoRoute(path: '/habit/new', builder: (_, _) => const HabitFormScreen()),
         GoRoute(path: '/habit/:id', builder: (_, s) => HabitDetailScreen(habitId: _id(s))),
         GoRoute(path: '/habit/:id/edit', builder: (_, s) => HabitFormScreen(habitId: _id(s))),
+        GoRoute(path: '/stats', builder: (_, _) => const OverallStatsScreen()),
         GoRoute(path: '/archive', builder: (_, _) => const ArchiveScreen()),
         GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
       ],

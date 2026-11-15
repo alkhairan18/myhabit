@@ -9,6 +9,7 @@ import 'package:rutin/features/habits/application/providers.dart';
 import 'package:rutin/features/habits/data/database.dart';
 import 'package:rutin/features/habits/data/habit_repository.dart';
 import 'package:rutin/features/habits/domain/habit.dart';
+import 'package:rutin/features/habits/domain/habit_log.dart';
 import 'package:rutin/features/habits/presentation/archive_screen.dart';
 import 'package:rutin/features/habits/presentation/habit_form_screen.dart';
 import 'package:rutin/features/reminders/data/notification_service.dart';
@@ -42,6 +43,8 @@ class SpyRepo extends HabitRepository {
   Future<List<ReminderTime>> remindersFor(int habitId) async => [];
   @override
   Stream<List<Habit>> watchActive() => Stream.value(const []);
+  @override
+  Stream<List<HabitLog>> watchLogsOn(DateTime date) => Stream.value(const []);
   @override
   Future<List<ReminderRow>> allEnabledReminders() async => const [];
 }
@@ -125,8 +128,10 @@ void main() {
     await t.pumpWidget(app(spy, '/habit/new'));
     await t.pumpAndSettle();
     await t.enterText(find.byKey(const Key('name')), '  Minum air ');
+    await t.enterText(find.byKey(const Key('description')), '  Agar segar ');
     await save(t);
     expect(spy.created.single.name, 'Minum air');
+    expect(spy.created.single.description, 'Agar segar');
     expect(spy.created.single.frequencyType, FrequencyType.daily);
     expect(find.text('home'), findsOneWidget);
   });
@@ -268,6 +273,11 @@ class _DummyGateway implements NotificationGateway {
 class _ExactDeniedService extends NotificationService {
   _ExactDeniedService() : super(_DummyGateway());
   @override
-  Future<ReminderSyncResult> sync(List<Habit> activeHabits, List<ReminderRow> reminders) async =>
+  Future<ReminderSyncResult> sync(
+    List<Habit> activeHabits,
+    List<ReminderRow> reminders, {
+    int? todayWeekday,
+    Set<int> completedTodayHabitIds = const {},
+  }) async =>
       ReminderSyncResult.exactAlarmDenied;
 }

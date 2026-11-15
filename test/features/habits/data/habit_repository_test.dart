@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rutin/features/habits/data/database.dart';
@@ -67,5 +69,44 @@ void main() {
     final id = await repo.create(draft,
         createdAt: d(2026, 11, 1), reminders: [const ReminderTime(7, 5)]);
     expect((await repo.remindersFor(id)).single.toHm(), '07:05');
+  });
+
+  test('reorder updates sortOrder in watchActive', () async {
+    final id1 = await repo.create(draft, createdAt: d(2026, 11, 1));
+    final id2 = await repo.create(draft, createdAt: d(2026, 11, 1));
+    final id3 = await repo.create(draft, createdAt: d(2026, 11, 1));
+    await repo.reorder([id3, id1, id2]);
+    final hs = await repo.watchActive().first;
+    expect(hs.map((h) => h.id).toList(), [id3, id1, id2]);
+  });
+
+  test('setNote stores daily note and preserves completion state', () async {
+    final id = await repo.create(draft, createdAt: d(2026, 11, 1));
+    await repo.setCompletion(id, d(2026, 11, 5), true, today: d(2026, 11, 5));
+    await repo.setNote(id, d(2026, 11, 5), 'Segar sekali', today: d(2026, 11, 5));
+    final log = (await repo.watchLogs(id).first).single;
+    expect(log.completed, true);
+    expect(log.note, 'Segar sekali');
+  });
+
+  test('exportJson produces valid JSON with habits, logs, and reminders', () async {
+    final id = await repo.create(draft,
+        createdAt: d(2026, 11, 1), reminders: [const ReminderTime(8, 0)]);
+    await repo.setCompletion(id, d(2026, 11, 5), true, today: d(2026, 11, 5));
+    final jsonStr = await repo.exportJson();
+    final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+    expect((decoded['habits'] as List).length, 1);
+    expect((decoded['logs'] as List).length, 1);
+    expect((decoded['reminders'] as List).length, 1);
+  });
+
+  test('clearAll deletes all habits, logs, and reminders', () async {
+    final id = await repo.create(draft,
+        createdAt: d(2026, 11, 1), reminders: [const ReminderTime(8, 0)]);
+    await repo.setCompletion(id, d(2026, 11, 5), true, today: d(2026, 11, 5));
+    await repo.clearAll();
+    expect(await repo.watchActive().first, isEmpty);
+    expect(await db.select(db.habitLogs).get(), isEmpty);
+    expect(await db.select(db.reminders).get(), isEmpty);
   });
 }

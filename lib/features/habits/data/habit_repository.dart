@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import '../../../core/date_utils.dart';
@@ -135,6 +137,13 @@ class HabitRepository {
   Future<void> delete(int id) =>
       (_db.delete(_db.habits)..where((t) => t.id.equals(id))).go();
 
+  Future<void> reorder(List<int> habitIds) => _db.transaction(() async {
+        for (var i = 0; i < habitIds.length; i++) {
+          await (_db.update(_db.habits)..where((t) => t.id.equals(habitIds[i])))
+              .write(HabitsCompanion(sortOrder: Value(i)));
+        }
+      });
+
   Future<void> setCompletion(int habitId, DateTime date, bool completed,
       {required DateTime today}) async {
     final d = dateOnly(date);
@@ -149,6 +158,70 @@ class HabitRepository {
               target: [_db.habitLogs.habitId, _db.habitLogs.date]),
         );
   }
+
+  Future<void> setNote(int habitId, DateTime date, String? note,
+      {required DateTime today}) async {
+    final d = dateOnly(date);
+    final t = dateOnly(today);
+    if (d.isAfter(t)) throw FutureDateError();
+    final habit = await getHabit(habitId);
+    if (habit == null || d.isBefore(habit.createdAt)) throw BeforeCreationError();
+    final trimmed = note?.trim();
+    final val = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+    await _db.into(_db.habitLogs).insert(
+          HabitLogsCompanion.insert(
+              habitId: habitId, date: toIso(d), completed: false, note: Value(val)),
+          onConflict: DoUpdate((_) => HabitLogsCompanion(note: Value(val)),
+              target: [_db.habitLogs.habitId, _db.habitLogs.date]),
+        );
+  }
+
+  Future<String> exportJson() async {
+    final habits = await _db.select(_db.habits).get();
+    final logs = await _db.select(_db.habitLogs).get();
+    final reminders = await _db.select(_db.reminders).get();
+    return const JsonEncoder.withIndent('  ').convert({
+      'habits': [
+        for (final h in habits)
+          {
+            'id': h.id,
+            'name': h.name,
+            'description': h.description,
+            'icon': h.icon,
+            'color': h.color,
+            'frequencyType': h.frequencyType,
+            'frequencyDays': h.frequencyDays,
+            'targetPerWeek': h.targetPerWeek,
+            'sortOrder': h.sortOrder,
+            'createdAt': h.createdAt,
+            'archivedAt': h.archivedAt,
+          }
+      ],
+      'logs': [
+        for (final l in logs)
+          {
+            'habitId': l.habitId,
+            'date': l.date,
+            'completed': l.completed,
+            'note': l.note,
+          }
+      ],
+      'reminders': [
+        for (final r in reminders)
+          {
+            'habitId': r.habitId,
+            'time': r.time,
+            'enabled': r.enabled,
+          }
+      ],
+    });
+  }
+
+  Future<void> clearAll() => _db.transaction(() async {
+        await _db.delete(_db.habitLogs).go();
+        await _db.delete(_db.reminders).go();
+        await _db.delete(_db.habits).go();
+      });
 
   HabitLog _toLog(HabitLogRow r) => HabitLog(
       habitId: r.habitId, date: parseIso(r.date), completed: r.completed, note: r.note);

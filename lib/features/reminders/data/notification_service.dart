@@ -21,9 +21,18 @@ class NotificationService {
   final NotificationGateway _gateway;
 
   Future<ReminderSyncResult> sync(
-      List<Habit> activeHabits, List<ReminderRow> reminders) async {
+    List<Habit> activeHabits,
+    List<ReminderRow> reminders, {
+    int? todayWeekday,
+    Set<int> completedTodayHabitIds = const {},
+  }) async {
     await _gateway.cancelAll();
-    final planned = planNotifications(activeHabits, reminders);
+    final planned = planNotifications(
+      activeHabits,
+      reminders,
+      todayWeekday: todayWeekday,
+      completedTodayHabitIds: completedTodayHabitIds,
+    );
     if (planned.isEmpty) return ReminderSyncResult.ok;
     if (!await _gateway.requestPermission()) {
       return ReminderSyncResult.permissionDenied;

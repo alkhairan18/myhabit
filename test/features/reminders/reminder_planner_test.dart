@@ -82,4 +82,14 @@ void main() {
     expect(g.cancels, 2);
     expect(g.scheduled, isEmpty);
   });
+
+  test('completedTodayHabitIds skips todayWeekday notification for completed habit (FR-32)', () {
+    final res = planNotifications(
+      [h(1, FrequencyType.daily)],
+      [const ReminderRow(1, ReminderTime(8, 0))],
+      todayWeekday: DateTime.wednesday,
+      completedTodayHabitIds: {1},
+    );
+    expect(res.map((n) => n.weekday).toList(), [1, 2, 4, 5, 6, 7]);
+  });
 }

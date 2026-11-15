@@ -10,13 +10,17 @@ class RutinApp extends ConsumerWidget {
   const RutinApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
-        onGenerateTitle: (c) => AppLocalizations.of(c).appName,
-        routerConfig: ref.watch(routerProvider),
-        theme: lightTheme(),
-        darkTheme: darkTheme(),
-        themeMode: ThemeMode.values.byName(ref.watch(themeModeProvider).name),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final code = ref.watch(localeCodeProvider);
+    return MaterialApp.router(
+      onGenerateTitle: (c) => AppLocalizations.of(c).appName,
+      routerConfig: ref.watch(routerProvider),
+      theme: lightTheme(),
+      darkTheme: darkTheme(),
+      themeMode: ThemeMode.values.byName(ref.watch(themeModeProvider).name),
+      locale: code == null ? null : Locale(code),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    );
+  }
 }
