@@ -39,5 +39,9 @@
   "totalDone": "Total completed",
   "heatDone": "done",
   "heatNotDone": "not done",
-  "edit": "Edit"
+  "edit": "Edit",
+  "permTitle": "Enable reminders?",
+  "permBody": "Rutin uses local notifications to remind you at the times you choose.",
+  "permAllow": "Allow",
+  "permDenied": "Notification permission denied; reminders will not fire."
 }

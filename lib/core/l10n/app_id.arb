@@ -42,5 +42,9 @@
   "totalDone": "Total selesai",
   "heatDone": "selesai",
   "heatNotDone": "belum selesai",
-  "edit": "Ubah"
+  "edit": "Ubah",
+  "permTitle": "Aktifkan pengingat?",
+  "permBody": "Rutin memakai notifikasi lokal agar kamu diingatkan tepat pada jam yang kamu pilih.",
+  "permAllow": "Izinkan",
+  "permDenied": "Izin notifikasi ditolak; pengingat tidak akan berbunyi."
 }

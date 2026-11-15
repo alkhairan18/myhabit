@@ -1,3 +1,4 @@
+import '../../reminders/data/notification_service.dart';
 import 'dart:async';
 
 import 'package:drift_flutter/drift_flutter.dart';
@@ -92,3 +93,24 @@ final habitByIdProvider = Provider.family<Habit?, int>((ref, id) {
   }
   return null;
 });
+
+class _NoopGateway implements NotificationGateway {
+  @override
+  Future<bool> requestPermission() async => true;
+  @override
+  Future<bool> canScheduleExact() async => true;
+  @override
+  Future<void> cancelAll() async {}
+  @override
+  Future<void> schedule(n, {bool exact = true}) async {}
+}
+
+final notificationServiceProvider =
+    Provider<NotificationService>((_) => NotificationService(_NoopGateway()));
+
+Future<ReminderSyncResult> syncReminders(WidgetRef ref) async {
+  final repo = ref.read(habitRepositoryProvider);
+  final active = await repo.watchActive().first;
+  final reminders = await repo.allEnabledReminders();
+  return ref.read(notificationServiceProvider).sync(active, reminders);
+}

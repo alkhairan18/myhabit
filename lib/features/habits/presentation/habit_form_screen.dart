@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/tokens.dart';
+import '../../reminders/data/notification_service.dart';
+import '../../reminders/presentation/reminder_permission_sheet.dart';
 import '../application/providers.dart';
 import '../data/habit_repository.dart';
 import '../domain/habit.dart';
@@ -90,7 +92,14 @@ class _State extends ConsumerState<HabitFormScreen> {
     } else {
       await repo.update(id, draft, reminders: _reminders);
     }
-    if (mounted) _leave();
+    final syncRes = await syncReminders(ref);
+    if (!mounted) return;
+    if (syncRes == ReminderSyncResult.permissionDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).permDenied)),
+      );
+    }
+    _leave();
   }
 
   Future<void> _confirmDelete(AppLocalizations l10n) async {
@@ -110,11 +119,14 @@ class _State extends ConsumerState<HabitFormScreen> {
     );
     if (ok == true) {
       await ref.read(habitRepositoryProvider).delete(widget.habitId!);
+      await syncReminders(ref);
       if (mounted) _leave();
     }
   }
 
   Future<void> _addReminder() async {
+    if (_reminders.isEmpty && !await showReminderPermissionSheet(context)) return;
+    if (!mounted) return;
     final t = await showTimePicker(
         context: context, initialTime: const TimeOfDay(hour: 8, minute: 0));
     if (t != null) {
@@ -143,6 +155,7 @@ class _State extends ConsumerState<HabitFormScreen> {
               onPressed: () async {
                 await ref.read(habitRepositoryProvider)
                     .archive(widget.habitId!, ref.read(todayProvider));
+                await syncReminders(ref);
                 if (mounted) _leave();
               },
             ),

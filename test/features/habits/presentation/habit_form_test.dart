@@ -38,6 +38,10 @@ class SpyRepo extends HabitRepository {
   Future<Habit?> getHabit(int id) async => existing;
   @override
   Future<List<ReminderTime>> remindersFor(int habitId) async => [];
+  @override
+  Stream<List<Habit>> watchActive() => Stream.value(const []);
+  @override
+  Future<List<ReminderRow>> allEnabledReminders() async => const [];
 }
 
 final existing = Habit(id: 7, name: 'Baca', icon: 'book', color: 0xFF1E88E5,

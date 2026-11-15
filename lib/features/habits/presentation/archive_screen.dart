@@ -27,8 +27,10 @@ class ArchiveScreen extends ConsumerWidget {
                     key: Key('restore-${h.id}'),
                     tooltip: l10n.unarchive,
                     icon: const Icon(Icons.unarchive_outlined),
-                    onPressed: () =>
-                        ref.read(habitRepositoryProvider).unarchive(h.id),
+                    onPressed: () async {
+                      await ref.read(habitRepositoryProvider).unarchive(h.id);
+                      await syncReminders(ref);
+                    },
                   ),
                 ),
             ]),

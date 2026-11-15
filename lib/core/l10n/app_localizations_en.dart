@@ -135,4 +135,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit => 'Edit';
+
+  @override
+  String get permTitle => 'Enable reminders?';
+
+  @override
+  String get permBody =>
+      'Rutin uses local notifications to remind you at the times you choose.';
+
+  @override
+  String get permAllow => 'Allow';
+
+  @override
+  String get permDenied =>
+      'Notification permission denied; reminders will not fire.';
 }

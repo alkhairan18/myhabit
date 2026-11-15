@@ -337,6 +337,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ubah'**
   String get edit;
+
+  /// No description provided for @permTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktifkan pengingat?'**
+  String get permTitle;
+
+  /// No description provided for @permBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Rutin memakai notifikasi lokal agar kamu diingatkan tepat pada jam yang kamu pilih.'**
+  String get permBody;
+
+  /// No description provided for @permAllow.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan'**
+  String get permAllow;
+
+  /// No description provided for @permDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin notifikasi ditolak; pengingat tidak akan berbunyi.'**
+  String get permDenied;
 }
 
 class _AppLocalizationsDelegate

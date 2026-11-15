@@ -135,4 +135,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get edit => 'Ubah';
+
+  @override
+  String get permTitle => 'Aktifkan pengingat?';
+
+  @override
+  String get permBody =>
+      'Rutin memakai notifikasi lokal agar kamu diingatkan tepat pada jam yang kamu pilih.';
+
+  @override
+  String get permAllow => 'Izinkan';
+
+  @override
+  String get permDenied =>
+      'Izin notifikasi ditolak; pengingat tidak akan berbunyi.';
 }
