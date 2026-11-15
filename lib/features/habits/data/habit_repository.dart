@@ -18,7 +18,12 @@ class ReminderTime {
 
   factory ReminderTime.fromHm(String s) {
     final p = s.split(':');
-    return ReminderTime(int.parse(p[0]), int.parse(p[1]));
+    if (p.length != 2) throw const FormatException('Invalid HH:mm');
+    final h = int.parse(p[0]), m = int.parse(p[1]);
+    if (h < 0 || h > 23 || m < 0 || m > 59) {
+      throw const FormatException('Time out of range');
+    }
+    return ReminderTime(h, m);
   }
 
   String toHm() =>
@@ -165,13 +170,20 @@ class HabitRepository {
         }
       });
 
+  Future<DateTime> _validateLogDate(
+      int habitId, DateTime date, DateTime today) async {
+    final d = dateOnly(date);
+    if (d.isAfter(dateOnly(today))) throw FutureDateError();
+    final habit = await getHabit(habitId);
+    if (habit == null || d.isBefore(habit.createdAt)) {
+      throw BeforeCreationError();
+    }
+    return d;
+  }
+
   Future<void> setCompletion(int habitId, DateTime date, bool completed,
       {required DateTime today}) async {
-    final d = dateOnly(date);
-    final t = dateOnly(today);
-    if (d.isAfter(t)) throw FutureDateError();
-    final habit = await getHabit(habitId);
-    if (habit == null || d.isBefore(habit.createdAt)) throw BeforeCreationError();
+    final d = await _validateLogDate(habitId, date, today);
     await _db.into(_db.habitLogs).insert(
           HabitLogsCompanion.insert(
               habitId: habitId, date: toIso(d), completed: completed),
@@ -182,11 +194,7 @@ class HabitRepository {
 
   Future<void> setNote(int habitId, DateTime date, String? note,
       {required DateTime today}) async {
-    final d = dateOnly(date);
-    final t = dateOnly(today);
-    if (d.isAfter(t)) throw FutureDateError();
-    final habit = await getHabit(habitId);
-    if (habit == null || d.isBefore(habit.createdAt)) throw BeforeCreationError();
+    final d = await _validateLogDate(habitId, date, today);
     final trimmed = note?.trim();
     final val = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
     await _db.into(_db.habitLogs).insert(
@@ -244,8 +252,11 @@ class HabitRepository {
 
   static String _csvCell(String? raw) {
     if (raw == null || raw.isEmpty) return '';
-    final safe = RegExp(r'^[=+\-@]').hasMatch(raw) ? "'$raw" : raw;
-    if (safe.contains(',') || safe.contains('"') || safe.contains('\n')) {
+    final safe = RegExp(r'^[\s=+\-@]').hasMatch(raw) ? "'$raw" : raw;
+    if (safe.contains(',') ||
+        safe.contains('"') ||
+        safe.contains('\n') ||
+        safe.contains('\r')) {
       return '"${safe.replaceAll('"', '""')}"';
     }
     return safe;
@@ -310,16 +321,35 @@ class HabitRepository {
         parseIso(createdIso);
         final archivedIso = item['archivedAt'] as String?;
         if (archivedIso != null) parseIso(archivedIso);
+        final rawDays = (item['frequencyDays'] as String?) ?? '';
+        final validDays = rawDays.isEmpty
+            ? <int>[]
+            : rawDays.split(',').map((s) {
+                final v = int.parse(s);
+                if (v < 1 || v > 7) {
+                  throw const FormatException('Weekday out of range');
+                }
+                return v;
+              }).toList()
+          ..sort();
+        final target = (item['targetPerWeek'] as num?)?.toInt();
+        if (target != null && (target < 1 || target > 7)) {
+          throw const FormatException('targetPerWeek out of range');
+        }
+        final rawDesc = (item['description'] as String?)?.trim();
+        final desc = (rawDesc == null || rawDesc.isEmpty)
+            ? null
+            : (rawDesc.length > 80 ? rawDesc.substring(0, 80) : rawDesc);
 
         final newId = await _db.into(_db.habits).insert(
               HabitsCompanion.insert(
                 name: name,
-                description: Value(item['description'] as String?),
+                description: Value(desc),
                 icon: (item['icon'] as String?) ?? 'check',
                 color: (item['color'] as num?)?.toInt() ?? 0xFF2E6F40,
                 frequencyType: _encodeFreqAndSlot(freq, slot),
-                frequencyDays: Value((item['frequencyDays'] as String?) ?? ''),
-                targetPerWeek: Value((item['targetPerWeek'] as num?)?.toInt()),
+                frequencyDays: Value(validDays.join(',')),
+                targetPerWeek: Value(target),
                 sortOrder: (item['sortOrder'] as num?)?.toInt() ?? i,
                 createdAt: createdIso,
                 archivedAt: Value(archivedIso),
@@ -334,12 +364,16 @@ class HabitRepository {
         final dateIso = item['date'] as String?;
         if (newHabitId == null || dateIso == null) continue;
         parseIso(dateIso);
+        final rawNote = (item['note'] as String?)?.trim();
+        final note = (rawNote == null || rawNote.isEmpty)
+            ? null
+            : (rawNote.length > 120 ? rawNote.substring(0, 120) : rawNote);
         await _db.into(_db.habitLogs).insert(
               HabitLogsCompanion.insert(
                 habitId: newHabitId,
                 date: dateIso,
                 completed: (item['completed'] as bool?) ?? false,
-                note: Value(item['note'] as String?),
+                note: Value(note),
               ),
               mode: InsertMode.insertOrReplace,
             );

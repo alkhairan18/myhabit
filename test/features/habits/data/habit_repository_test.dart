@@ -175,5 +175,18 @@ void main() {
     expect((await repo.remindersFor(restored.id)).single.toHm(), '06:30');
 
     expect(() => repo.importJson('not-json'), throwsFormatException);
+    expect(
+      () => repo.importJson('{"habits":[{"name":"A","frequencyDays":"bad"}]}'),
+      throwsFormatException,
+    );
+    expect(
+      () => repo.importJson('{"habits":[{"name":"A","targetPerWeek":9}]}'),
+      throwsFormatException,
+    );
+    expect(
+      () => repo.importJson(
+          '{"habits":[{"id":1,"name":"A"}],"reminders":[{"habitId":1,"time":"25:00"}]}'),
+      throwsFormatException,
+    );
   });
 }

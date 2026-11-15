@@ -10,83 +10,83 @@ import 'settings_repository.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  Future<void> _exportJson(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
-    final jsonStr = await ref.read(habitRepositoryProvider).exportJson();
+  Future<void> _showExportDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+    required String copyKey,
+    required String closeKey,
+    required String copyLabel,
+    required String copiedSnack,
+    required String cancelLabel,
+  }) async {
     if (!context.mounted) return;
     await showDialog<void>(
       context: context,
       builder: (c) => AlertDialog(
-        title: Text(l10n.exportJson),
+        title: Text(title),
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
             child: SelectableText(
-              jsonStr,
+              content,
               style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
             ),
           ),
         ),
         actions: [
           TextButton(
-            key: const Key('export-copy'),
+            key: Key(copyKey),
             onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: jsonStr));
+              await Clipboard.setData(ClipboardData(text: content));
               if (c.mounted) {
                 Navigator.pop(c);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.exportCopied)),
+                  SnackBar(content: Text(copiedSnack)),
                 );
               }
             },
-            child: Text(l10n.exportCopy),
+            child: Text(copyLabel),
           ),
           TextButton(
-            key: const Key('close-export'),
+            key: Key(closeKey),
             onPressed: () => Navigator.pop(c),
-            child: Text(l10n.cancel),
+            child: Text(cancelLabel),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _exportCsv(BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+  Future<void> _exportJson(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
+    final jsonStr = await ref.read(habitRepositoryProvider).exportJson();
+    if (!context.mounted) return;
+    await _showExportDialog(
+      context,
+      title: l10n.exportJson,
+      content: jsonStr,
+      copyKey: 'export-copy',
+      closeKey: 'close-export',
+      copyLabel: l10n.exportCopy,
+      copiedSnack: l10n.exportCopied,
+      cancelLabel: l10n.cancel,
+    );
+  }
+
+  Future<void> _exportCsv(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) async {
     final csvStr = await ref.read(habitRepositoryProvider).exportCsv();
     if (!context.mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: Text(l10n.exportCsv),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: SelectableText(
-              csvStr,
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            key: const Key('export-csv-copy'),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: csvStr));
-              if (c.mounted) {
-                Navigator.pop(c);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.exportCsvCopied)),
-                );
-              }
-            },
-            child: Text(l10n.exportCsvCopy),
-          ),
-          TextButton(
-            key: const Key('close-export-csv'),
-            onPressed: () => Navigator.pop(c),
-            child: Text(l10n.cancel),
-          ),
-        ],
-      ),
+    await _showExportDialog(
+      context,
+      title: l10n.exportCsv,
+      content: csvStr,
+      copyKey: 'export-csv-copy',
+      closeKey: 'close-export-csv',
+      copyLabel: l10n.exportCsvCopy,
+      copiedSnack: l10n.exportCsvCopied,
+      cancelLabel: l10n.cancel,
     );
   }
 

@@ -71,6 +71,27 @@ class OverallStatsScreen extends ConsumerWidget {
       return count == 0 ? 0.0 : total / count;
     }
 
+    Widget statCol(String label, String val, {Key? key, Color? color}) =>
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label,
+                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+              const SizedBox(height: 4),
+              Text(
+                val,
+                key: key,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+              ),
+            ],
+          ),
+        );
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.statsTitle)),
       body: ListView(
@@ -85,61 +106,12 @@ class OverallStatsScreen extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.overallActiveHabits,
-                          style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${habits.length}',
-                        key: const Key('overall-active'),
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.success7,
-                          style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
-                      const SizedBox(height: 4),
-                      Text(
-                        pct(avg7),
-                        key: const Key('overall-rate7'),
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: cs.primary,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.success30,
-                          style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
-                      const SizedBox(height: 4),
-                      Text(
-                        pct(avg30),
-                        key: const Key('overall-rate30'),
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
+                statCol(l10n.overallActiveHabits, '${habits.length}',
+                    key: const Key('overall-active')),
+                statCol(l10n.success7, pct(avg7),
+                    key: const Key('overall-rate7'), color: cs.primary),
+                statCol(l10n.success30, pct(avg30),
+                    key: const Key('overall-rate30')),
               ],
             ),
           ),

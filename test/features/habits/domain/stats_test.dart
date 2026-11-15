@@ -53,7 +53,6 @@ void main() {
       sortOrder: 1,
       createdAt: d(2026, 11, 1),
     );
-    // Week starting Monday 2026-11-09 through Wednesday 2026-11-11 (3 days, 6 scheduled total).
     final recap = calculateWeeklyRecap(
       [h1, h2],
       {
