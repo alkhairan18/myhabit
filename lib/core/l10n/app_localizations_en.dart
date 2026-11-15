@@ -108,4 +108,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noArchived => 'No archived habits.';
+
+  @override
+  String get currentStreak => 'Current streak';
+
+  @override
+  String get bestStreak => 'Best streak';
+
+  @override
+  String get success7 => 'Success, 7 days';
+
+  @override
+  String get success30 => 'Success, 30 days';
+
+  @override
+  String get successAll => 'All time';
+
+  @override
+  String get totalDone => 'Total completed';
+
+  @override
+  String get heatDone => 'done';
+
+  @override
+  String get heatNotDone => 'not done';
+
+  @override
+  String get edit => 'Edit';
 }

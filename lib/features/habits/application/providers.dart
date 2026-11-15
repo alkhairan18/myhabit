@@ -80,3 +80,15 @@ class ThemeModeNotifier extends Notifier<AppThemeMode> {
 
 final themeModeProvider =
     NotifierProvider<ThemeModeNotifier, AppThemeMode>(ThemeModeNotifier.new);
+
+/// Looks in active and archived lists so archived habits stay viewable.
+final habitByIdProvider = Provider.family<Habit?, int>((ref, id) {
+  final all = [
+    ...?ref.watch(activeHabitsProvider).value,
+    ...?ref.watch(archivedHabitsProvider).value,
+  ];
+  for (final h in all) {
+    if (h.id == id) return h;
+  }
+  return null;
+});

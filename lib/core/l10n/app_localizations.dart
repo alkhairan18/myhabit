@@ -283,6 +283,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak ada kebiasaan terarsip.'**
   String get noArchived;
+
+  /// No description provided for @currentStreak.
+  ///
+  /// In id, this message translates to:
+  /// **'Streak saat ini'**
+  String get currentStreak;
+
+  /// No description provided for @bestStreak.
+  ///
+  /// In id, this message translates to:
+  /// **'Streak terbaik'**
+  String get bestStreak;
+
+  /// No description provided for @success7.
+  ///
+  /// In id, this message translates to:
+  /// **'Berhasil 7 hari'**
+  String get success7;
+
+  /// No description provided for @success30.
+  ///
+  /// In id, this message translates to:
+  /// **'Berhasil 30 hari'**
+  String get success30;
+
+  /// No description provided for @successAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Sepanjang waktu'**
+  String get successAll;
+
+  /// No description provided for @totalDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Total selesai'**
+  String get totalDone;
+
+  /// No description provided for @heatDone.
+  ///
+  /// In id, this message translates to:
+  /// **'selesai'**
+  String get heatDone;
+
+  /// No description provided for @heatNotDone.
+  ///
+  /// In id, this message translates to:
+  /// **'belum selesai'**
+  String get heatNotDone;
+
+  /// No description provided for @edit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah'**
+  String get edit;
 }
 
 class _AppLocalizationsDelegate

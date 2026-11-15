@@ -108,4 +108,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noArchived => 'Tidak ada kebiasaan terarsip.';
+
+  @override
+  String get currentStreak => 'Streak saat ini';
+
+  @override
+  String get bestStreak => 'Streak terbaik';
+
+  @override
+  String get success7 => 'Berhasil 7 hari';
+
+  @override
+  String get success30 => 'Berhasil 30 hari';
+
+  @override
+  String get successAll => 'Sepanjang waktu';
+
+  @override
+  String get totalDone => 'Total selesai';
+
+  @override
+  String get heatDone => 'selesai';
+
+  @override
+  String get heatNotDone => 'belum selesai';
+
+  @override
+  String get edit => 'Ubah';
 }

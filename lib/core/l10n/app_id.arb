@@ -33,5 +33,14 @@
   "archiveTitle": "Arsip",
   "addReminder": "Tambah pengingat",
   "reminders": "Pengingat",
-  "noArchived": "Tidak ada kebiasaan terarsip."
+  "noArchived": "Tidak ada kebiasaan terarsip.",
+  "currentStreak": "Streak saat ini",
+  "bestStreak": "Streak terbaik",
+  "success7": "Berhasil 7 hari",
+  "success30": "Berhasil 30 hari",
+  "successAll": "Sepanjang waktu",
+  "totalDone": "Total selesai",
+  "heatDone": "selesai",
+  "heatNotDone": "belum selesai",
+  "edit": "Ubah"
 }
