@@ -151,6 +151,138 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak ada jadwal di hari ini.'**
   String get nothingScheduled;
+
+  /// No description provided for @newHabit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan baru'**
+  String get newHabit;
+
+  /// No description provided for @editHabit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kebiasaan'**
+  String get editHabit;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get nameLabel;
+
+  /// No description provided for @errNameEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama wajib diisi'**
+  String get errNameEmpty;
+
+  /// No description provided for @errNameTooLong.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 40 karakter'**
+  String get errNameTooLong;
+
+  /// No description provided for @freqDaily.
+  ///
+  /// In id, this message translates to:
+  /// **'Harian'**
+  String get freqDaily;
+
+  /// No description provided for @freqDays.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari tertentu'**
+  String get freqDays;
+
+  /// No description provided for @freqWeekly.
+  ///
+  /// In id, this message translates to:
+  /// **'X kali/minggu'**
+  String get freqWeekly;
+
+  /// No description provided for @errNoDays.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minimal satu hari'**
+  String get errNoDays;
+
+  /// No description provided for @targetLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Target per minggu'**
+  String get targetLabel;
+
+  /// No description provided for @errTarget.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi 1 sampai 7'**
+  String get errTarget;
+
+  /// No description provided for @save.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get save;
+
+  /// No description provided for @delete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get delete;
+
+  /// No description provided for @deleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kebiasaan?'**
+  String get deleteTitle;
+
+  /// No description provided for @deleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Seluruh riwayat dan pengingat ikut terhapus.'**
+  String get deleteBody;
+
+  /// No description provided for @cancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get cancel;
+
+  /// No description provided for @archive.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan'**
+  String get archive;
+
+  /// No description provided for @unarchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get unarchive;
+
+  /// No description provided for @archiveTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsip'**
+  String get archiveTitle;
+
+  /// No description provided for @addReminder.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah pengingat'**
+  String get addReminder;
+
+  /// No description provided for @reminders.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get reminders;
+
+  /// No description provided for @noArchived.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kebiasaan terarsip.'**
+  String get noArchived;
 }
 
 class _AppLocalizationsDelegate

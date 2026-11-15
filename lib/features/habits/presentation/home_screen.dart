@@ -27,7 +27,13 @@ class HomeScreen extends ConsumerWidget {
     final habits = habitsAsync.value ?? const [];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appName)),
+      appBar: AppBar(title: Text(l10n.appName), actions: [
+        IconButton(
+          tooltip: l10n.archiveTitle,
+          icon: const Icon(Icons.archive_outlined),
+          onPressed: () => context.push('/archive'),
+        ),
+      ]),
       floatingActionButton: habits.isEmpty
           ? null
           : FloatingActionButton(
@@ -124,3 +130,4 @@ class _Empty extends StatelessWidget {
         ),
       );
 }
+

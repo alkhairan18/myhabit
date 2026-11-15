@@ -42,4 +42,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nothingScheduled => 'Nothing scheduled for this day.';
+
+  @override
+  String get newHabit => 'New habit';
+
+  @override
+  String get editHabit => 'Edit habit';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get errNameEmpty => 'Name is required';
+
+  @override
+  String get errNameTooLong => 'Max 40 characters';
+
+  @override
+  String get freqDaily => 'Daily';
+
+  @override
+  String get freqDays => 'Specific days';
+
+  @override
+  String get freqWeekly => 'Times per week';
+
+  @override
+  String get errNoDays => 'Pick at least one day';
+
+  @override
+  String get targetLabel => 'Target per week';
+
+  @override
+  String get errTarget => 'Enter 1 to 7';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get deleteTitle => 'Delete habit?';
+
+  @override
+  String get deleteBody => 'All history and reminders will be deleted.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String get unarchive => 'Restore';
+
+  @override
+  String get archiveTitle => 'Archive';
+
+  @override
+  String get addReminder => 'Add reminder';
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get noArchived => 'No archived habits.';
 }
