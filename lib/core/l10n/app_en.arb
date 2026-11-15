@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "appName": "Rutin",
+  "todayLabel": "Today",
+  "progressLabel": "{done}/{total}",
+  "emptyTitle": "No habits yet",
+  "emptyBody": "Create your first habit and check it off in one tap.",
+  "addHabit": "Add habit",
+  "markDone": "Mark {name} as done",
+  "markUndone": "Mark {name} as not done",
+  "nothingScheduled": "Nothing scheduled for this day."
+}

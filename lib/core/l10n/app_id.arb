@@ -1,0 +1,15 @@
+{
+  "@@locale": "id",
+  "appName": "Rutin",
+  "todayLabel": "Hari ini",
+  "progressLabel": "{done}/{total}",
+  "@progressLabel": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "emptyTitle": "Belum ada kebiasaan",
+  "emptyBody": "Buat kebiasaan pertamamu dan centang dengan satu ketukan.",
+  "addHabit": "Tambah kebiasaan",
+  "markDone": "Tandai {name} selesai",
+  "@markDone": { "placeholders": { "name": { "type": "String" } } },
+  "markUndone": "Batalkan tanda selesai {name}",
+  "@markUndone": { "placeholders": { "name": { "type": "String" } } },
+  "nothingScheduled": "Tidak ada jadwal di hari ini."
+}

@@ -17,3 +17,18 @@ const habitColors = <Color>[
 
 const animFast = Duration(milliseconds: 200);
 
+
+const habitIcons = <String, IconData>{
+  'water': Icons.water_drop,
+  'book': Icons.menu_book,
+  'fitness': Icons.fitness_center,
+  'run': Icons.directions_run,
+  'study': Icons.school,
+  'pray': Icons.self_improvement,
+  'sleep': Icons.bedtime,
+  'food': Icons.restaurant,
+  'code': Icons.code,
+  'music': Icons.music_note,
+};
+
+IconData iconFor(String name) => habitIcons[name] ?? Icons.check_circle_outline;
