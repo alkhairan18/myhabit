@@ -4,6 +4,7 @@
 **Platform:** Android (API 26 / Android 8.0 ke atas)  
 **Stack:** Flutter 3, Dart 3, Riverpod, Drift (SQLite), GoRouter, Material 3  
 **Ukuran APK Rilis (`arm64-v8a`):** 21.6 MB (target PRD `< 30 MB`)  
+**Waktu Cold Start (Perangkat Fisik Android 13):** 517 ms (target PRD `< 2000 ms`)  
 **Pengujian Otomatis:** 89 pengujian lulus (`100%` cakupan baris pada domain logic)
 
 ---
@@ -109,4 +110,14 @@ flowchart TD
 
 - **Unit & Widget Testing:** 89 pengujian otomatis mencakup perhitungan *streak* lintas tahun dan tahun kabisat, batas waktu tengah malam (*midnight rollover*), idempotensi SQLite, alur form dan pengingat, hingga pengujian integrasi penuh (`integration_test/habit_flow_test.dart`) pada skala teks `200%`.
 - **Analisis Statis & Desain:** `flutter analyze` menghasilkan `0` peringatan/kesalahan, dan pemeriksaan anti-pola UI (`impeccable detect`) menghasilkan `0` pelanggaran.
-- **Ukuran Rilis:** APK rilis `arm64-v8a` terkompresi berukuran **21.6 MB** dengan *tree-shaking* ikon sebesar 99.5%.
+- **Ukuran Rilis & Performa Perangkat Fisik:** APK rilis `arm64-v8a` terkompresi berukuran **21.6 MB** dengan *tree-shaking* ikon sebesar 99.5%, dan waktu *cold start* terukur pada perangkat fisik Android 13 (`Xiaomi Redmi Note 11 Pro / 2201116TG`) adalah **517 ms** (`am start -W`, jauh di bawah target PRD `< 2000 ms`).
+
+---
+
+## 8. Galeri Tangkapan Layar
+
+| Onboarding (Langkah 3) | Beranda (Selebrasi 100%) | Form Kebiasaan |
+| :---: | :---: | :---: |
+| ![Onboarding](screenshots/01-onboarding.png) | ![Beranda](screenshots/02-home-celebration.png) | ![Form Kebiasaan](screenshots/03-habit-form.png) |
+| **Detail, Lencana & Heatmap** | **Statistik & Ringkasan Mingguan** | **Mode Gelap** |
+| ![Detail Kebiasaan](screenshots/04-habit-detail.png) | ![Statistik](screenshots/05-overall-stats.png) | ![Mode Gelap](screenshots/06-dark-mode.png) |

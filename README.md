@@ -10,6 +10,16 @@ Aplikasi pelacak kebiasaan untuk Android (API 26 / Android 8.0+) yang bekerja 10
 - **Pengingat Lokal Cerdas:** Beberapa jam pengingat per kebiasaan, otomatis melewati pengingat hari ini jika kebiasaan sudah selesai, serta tombol aksi cepat langsung dari notifikasi (**Tandai selesai** dan **Tunda 15 mnt**).
 - **Kendali Penuh atas Data & Tampilan:** Ekspor data ke **JSON** maupun **CSV**, impor kembali dari cadangan **JSON**, opsi hapus seluruh data, tema **Terang / Gelap / Sistem** (*Warm Botanical & Tactile Planner*), pilihan hari awal minggu (**Senin / Minggu**), serta dukungan **Bahasa Indonesia** dan **Bahasa Inggris**.
 
+## Tangkapan Layar (Screenshots)
+
+Diambil langsung dari perangkat fisik Android 13 (`1080x2400`):
+
+| Onboarding & Kebiasaan Awal | Beranda & Selebrasi 100% | Form Buat/Ubah Kebiasaan |
+| :---: | :---: | :---: |
+| ![Onboarding](docs/screenshots/01-onboarding.png) | ![Beranda](docs/screenshots/02-home-celebration.png) | ![Form Kebiasaan](docs/screenshots/03-habit-form.png) |
+| **Detail, Lencana & Heatmap** | **Statistik & Ringkasan Mingguan** | **Mode Gelap (Pinus Pekat)** |
+| ![Detail Kebiasaan](docs/screenshots/04-habit-detail.png) | ![Statistik](docs/screenshots/05-overall-stats.png) | ![Mode Gelap](docs/screenshots/06-dark-mode.png) |
+
 ## Dokumentasi Proyek
 
 - [Studi Kasus Portofolio (`docs/case-study.md`)](docs/case-study.md)
