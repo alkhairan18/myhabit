@@ -110,7 +110,7 @@ final notificationServiceProvider =
 
 Future<ReminderSyncResult> syncReminders(WidgetRef ref) async {
   final repo = ref.read(habitRepositoryProvider);
-  final active = await repo.watchActive().first;
+  final active = await repo.getActive();
   final reminders = await repo.allEnabledReminders();
   return ref.read(notificationServiceProvider).sync(active, reminders);
 }

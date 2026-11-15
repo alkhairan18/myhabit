@@ -1,4 +1,4 @@
-# Kebijakan Privasi — Rutin
+ï»¿# Kebijakan Privasi - Rutin
 
 Rutin menyimpan seluruh data kebiasaan, riwayat pencatatan, pengingat, dan preferensi **hanya secara lokal di perangkat Anda** (SQLite & SharedPreferences).
 
@@ -7,3 +7,4 @@ Rutin menyimpan seluruh data kebiasaan, riwayat pencatatan, pengingat, dan prefe
 - Tidak ada analitik, iklan, atau pelacak pihak ketiga.
 
 Menghapus data aplikasi atau mencopot pemasangan aplikasi akan menghapus seluruh data secara permanen dari perangkat Anda.
+

@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'{done}/{total}'**
   String progressLabel(int done, int total);
 
+  /// No description provided for @dailyGoalDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kebiasaan hari ini tuntas'**
+  String get dailyGoalDone;
+
+  /// No description provided for @dailyGoalPartial.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk lingkaran untuk mencatat selesai'**
+  String get dailyGoalPartial;
+
   /// No description provided for @emptyTitle.
   ///
   /// In id, this message translates to:
@@ -125,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyBody.
   ///
   /// In id, this message translates to:
-  /// **'Buat kebiasaan pertamamu dan centang dengan satu ketukan.'**
+  /// **'Mulai dari satu kebiasaan kecil setiap hari dan catat selesai dalam satu ketukan.'**
   String get emptyBody;
 
   /// No description provided for @addHabit.
@@ -149,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @nothingScheduled.
   ///
   /// In id, this message translates to:
-  /// **'Tidak ada jadwal di hari ini.'**
+  /// **'Tidak ada kebiasaan terjadwal di hari ini.'**
   String get nothingScheduled;
 
   /// No description provided for @newHabit.
@@ -167,8 +179,32 @@ abstract class AppLocalizations {
   /// No description provided for @nameLabel.
   ///
   /// In id, this message translates to:
-  /// **'Nama'**
+  /// **'Nama kebiasaan'**
   String get nameLabel;
+
+  /// No description provided for @nameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mis. Minum air 8 gelas'**
+  String get nameHint;
+
+  /// No description provided for @iconSectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikon'**
+  String get iconSectionLabel;
+
+  /// No description provided for @colorSectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna penanda'**
+  String get colorSectionLabel;
+
+  /// No description provided for @frequencySectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal pengulangan'**
+  String get frequencySectionLabel;
 
   /// No description provided for @errNameEmpty.
   ///
@@ -200,6 +236,12 @@ abstract class AppLocalizations {
   /// **'X kali/minggu'**
   String get freqWeekly;
 
+  /// No description provided for @freqWeeklySummary.
+  ///
+  /// In id, this message translates to:
+  /// **'{count}x per minggu'**
+  String freqWeeklySummary(int count);
+
   /// No description provided for @errNoDays.
   ///
   /// In id, this message translates to:
@@ -221,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @save.
   ///
   /// In id, this message translates to:
-  /// **'Simpan'**
+  /// **'Simpan kebiasaan'**
   String get save;
 
   /// No description provided for @delete.
@@ -266,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Arsip'**
   String get archiveTitle;
 
+  /// No description provided for @archivedBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan'**
+  String get archivedBadge;
+
   /// No description provided for @addReminder.
   ///
   /// In id, this message translates to:
@@ -281,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @noArchived.
   ///
   /// In id, this message translates to:
-  /// **'Tidak ada kebiasaan terarsip.'**
+  /// **'Tidak ada kebiasaan terarsip. Kebiasaan yang Anda arsipkan akan tersimpan di sini beserta riwayatnya.'**
   String get noArchived;
 
   /// No description provided for @currentStreak.
@@ -296,22 +344,34 @@ abstract class AppLocalizations {
   /// **'Streak terbaik'**
   String get bestStreak;
 
+  /// No description provided for @streakUnitDays.
+  ///
+  /// In id, this message translates to:
+  /// **'hari'**
+  String get streakUnitDays;
+
+  /// No description provided for @streakUnitWeeks.
+  ///
+  /// In id, this message translates to:
+  /// **'minggu'**
+  String get streakUnitWeeks;
+
   /// No description provided for @success7.
   ///
   /// In id, this message translates to:
-  /// **'Berhasil 7 hari'**
+  /// **'7 hari'**
   String get success7;
 
   /// No description provided for @success30.
   ///
   /// In id, this message translates to:
-  /// **'Berhasil 30 hari'**
+  /// **'30 hari'**
   String get success30;
 
   /// No description provided for @successAll.
   ///
   /// In id, this message translates to:
-  /// **'Sepanjang waktu'**
+  /// **'Semua'**
   String get successAll;
 
   /// No description provided for @totalDone.
@@ -319,6 +379,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Total selesai'**
   String get totalDone;
+
+  /// No description provided for @heatmapTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat 3 bulan terakhir'**
+  String get heatmapTitle;
 
   /// No description provided for @heatDone.
   ///
@@ -377,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeLabel.
   ///
   /// In id, this message translates to:
-  /// **'Tema'**
+  /// **'Tampilan tema'**
   String get themeLabel;
 
   /// No description provided for @themeSystem.
@@ -389,31 +455,55 @@ abstract class AppLocalizations {
   /// No description provided for @themeLight.
   ///
   /// In id, this message translates to:
-  /// **'Terang'**
+  /// **'Terang (Kertas hangat)'**
   String get themeLight;
 
   /// No description provided for @themeDark.
   ///
   /// In id, this message translates to:
-  /// **'Gelap'**
+  /// **'Gelap (Pinus pekat)'**
   String get themeDark;
+
+  /// No description provided for @privacyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'100% disimpan di perangkat ini. Tanpa akun, tanpa pelacak.'**
+  String get privacyNote;
 
   /// No description provided for @onboardingTitle.
   ///
   /// In id, this message translates to:
-  /// **'Bangun kebiasaan baik tiap hari'**
+  /// **'Catat rutinitas harian dalam satu ketukan'**
   String get onboardingTitle;
 
   /// No description provided for @onboardingBody.
   ///
   /// In id, this message translates to:
-  /// **'Catat progres dalam satu ketukan, tanpa akun, sepenuhnya offline.'**
+  /// **'Bangun konsistensi lewat jadwal fleksibel, perhitungan streak otomatis, dan riwayat heatmap yang tersimpan penuh di perangkat Anda.'**
   String get onboardingBody;
+
+  /// No description provided for @onboardingPillar1.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu ketukan untuk mencatat selesai di hari ini maupun hari yang terlewat'**
+  String get onboardingPillar1;
+
+  /// No description provided for @onboardingPillar2.
+  ///
+  /// In id, this message translates to:
+  /// **'Streak dan statistik dihitung langsung dari riwayat nyata'**
+  String get onboardingPillar2;
+
+  /// No description provided for @onboardingPillar3.
+  ///
+  /// In id, this message translates to:
+  /// **'Berfungsi penuh tanpa internet dan tanpa perlu membuat akun'**
+  String get onboardingPillar3;
 
   /// No description provided for @onboardingStart.
   ///
   /// In id, this message translates to:
-  /// **'Mulai'**
+  /// **'Mulai mencatat kebiasaan'**
   String get onboardingStart;
 }
 

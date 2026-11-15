@@ -117,16 +117,25 @@ void main() {
     expect(find.text('Monday, 16 November'), findsOneWidget);
   });
 
-  testWidgets('WeekStrip: future days disabled, past selectable', (t) async {
+  testWidgets('WeekStrip: future days disabled, past selectable, full date semantics', (t) async {
+    final h = t.ensureSemantics();
     final picked = <DateTime>[];
     await t.pumpWidget(MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: WeekStrip(selected: d(2026, 11, 11), today: d(2026, 11, 11), onSelect: picked.add),
       ),
     ));
+    expect(
+      t.getSemantics(find.byKey(const Key('day-2026-11-11'))).label,
+      contains('November 11, 2026'),
+    );
     await t.tap(find.byKey(const Key('day-2026-11-12')));
     await t.tap(find.byKey(const Key('day-2026-11-10')));
     expect(picked, [d(2026, 11, 10)]);
+    h.dispose();
   });
 }
 

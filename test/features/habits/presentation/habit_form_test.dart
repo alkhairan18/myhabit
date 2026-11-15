@@ -228,6 +228,30 @@ void main() {
     await t.tap(find.byKey(const Key('restore-7')));
     expect(spy2.restored, [7]);
   });
+
+  testWidgets('editing an archived habit unarchives when archive button is tapped', (t) async {
+    final spy = _ArchivedHabitSpyRepo();
+    await t.pumpWidget(app(spy, '/habit/7/edit'));
+    await t.pumpAndSettle();
+    await t.tap(find.byKey(const Key('archive')));
+    await t.pumpAndSettle();
+    expect(spy.restored, [7]);
+    expect(spy.archived, isEmpty);
+  });
+}
+
+class _ArchivedHabitSpyRepo extends SpyRepo {
+  @override
+  Future<Habit?> getHabit(int id) async => Habit(
+        id: 7,
+        name: 'Baca',
+        icon: 'book',
+        color: 0xFF1E88E5,
+        frequencyType: FrequencyType.daily,
+        sortOrder: 0,
+        createdAt: d(2026, 1, 1),
+        archivedAt: d(2026, 11, 10),
+      );
 }
 
 class _DummyGateway implements NotificationGateway {

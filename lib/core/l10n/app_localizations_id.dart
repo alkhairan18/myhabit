@@ -21,11 +21,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get dailyGoalDone => 'Semua kebiasaan hari ini tuntas';
+
+  @override
+  String get dailyGoalPartial => 'Ketuk lingkaran untuk mencatat selesai';
+
+  @override
   String get emptyTitle => 'Belum ada kebiasaan';
 
   @override
   String get emptyBody =>
-      'Buat kebiasaan pertamamu dan centang dengan satu ketukan.';
+      'Mulai dari satu kebiasaan kecil setiap hari dan catat selesai dalam satu ketukan.';
 
   @override
   String get addHabit => 'Tambah kebiasaan';
@@ -41,7 +47,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get nothingScheduled => 'Tidak ada jadwal di hari ini.';
+  String get nothingScheduled => 'Tidak ada kebiasaan terjadwal di hari ini.';
 
   @override
   String get newHabit => 'Kebiasaan baru';
@@ -50,7 +56,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get editHabit => 'Ubah kebiasaan';
 
   @override
-  String get nameLabel => 'Nama';
+  String get nameLabel => 'Nama kebiasaan';
+
+  @override
+  String get nameHint => 'Mis. Minum air 8 gelas';
+
+  @override
+  String get iconSectionLabel => 'Ikon';
+
+  @override
+  String get colorSectionLabel => 'Warna penanda';
+
+  @override
+  String get frequencySectionLabel => 'Jadwal pengulangan';
 
   @override
   String get errNameEmpty => 'Nama wajib diisi';
@@ -68,6 +86,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get freqWeekly => 'X kali/minggu';
 
   @override
+  String freqWeeklySummary(int count) {
+    return '${count}x per minggu';
+  }
+
+  @override
   String get errNoDays => 'Pilih minimal satu hari';
 
   @override
@@ -77,7 +100,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get errTarget => 'Isi 1 sampai 7';
 
   @override
-  String get save => 'Simpan';
+  String get save => 'Simpan kebiasaan';
 
   @override
   String get delete => 'Hapus';
@@ -101,13 +124,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get archiveTitle => 'Arsip';
 
   @override
+  String get archivedBadge => 'Diarsipkan';
+
+  @override
   String get addReminder => 'Tambah pengingat';
 
   @override
   String get reminders => 'Pengingat';
 
   @override
-  String get noArchived => 'Tidak ada kebiasaan terarsip.';
+  String get noArchived =>
+      'Tidak ada kebiasaan terarsip. Kebiasaan yang Anda arsipkan akan tersimpan di sini beserta riwayatnya.';
 
   @override
   String get currentStreak => 'Streak saat ini';
@@ -116,16 +143,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get bestStreak => 'Streak terbaik';
 
   @override
-  String get success7 => 'Berhasil 7 hari';
+  String get streakUnitDays => 'hari';
 
   @override
-  String get success30 => 'Berhasil 30 hari';
+  String get streakUnitWeeks => 'minggu';
 
   @override
-  String get successAll => 'Sepanjang waktu';
+  String get success7 => '7 hari';
+
+  @override
+  String get success30 => '30 hari';
+
+  @override
+  String get successAll => 'Semua';
 
   @override
   String get totalDone => 'Total selesai';
+
+  @override
+  String get heatmapTitle => 'Riwayat 3 bulan terakhir';
 
   @override
   String get heatDone => 'selesai';
@@ -158,24 +194,40 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsTitle => 'Pengaturan';
 
   @override
-  String get themeLabel => 'Tema';
+  String get themeLabel => 'Tampilan tema';
 
   @override
   String get themeSystem => 'Mengikuti sistem';
 
   @override
-  String get themeLight => 'Terang';
+  String get themeLight => 'Terang (Kertas hangat)';
 
   @override
-  String get themeDark => 'Gelap';
+  String get themeDark => 'Gelap (Pinus pekat)';
 
   @override
-  String get onboardingTitle => 'Bangun kebiasaan baik tiap hari';
+  String get privacyNote =>
+      '100% disimpan di perangkat ini. Tanpa akun, tanpa pelacak.';
+
+  @override
+  String get onboardingTitle => 'Catat rutinitas harian dalam satu ketukan';
 
   @override
   String get onboardingBody =>
-      'Catat progres dalam satu ketukan, tanpa akun, sepenuhnya offline.';
+      'Bangun konsistensi lewat jadwal fleksibel, perhitungan streak otomatis, dan riwayat heatmap yang tersimpan penuh di perangkat Anda.';
 
   @override
-  String get onboardingStart => 'Mulai';
+  String get onboardingPillar1 =>
+      'Satu ketukan untuk mencatat selesai di hari ini maupun hari yang terlewat';
+
+  @override
+  String get onboardingPillar2 =>
+      'Streak dan statistik dihitung langsung dari riwayat nyata';
+
+  @override
+  String get onboardingPillar3 =>
+      'Berfungsi penuh tanpa internet dan tanpa perlu membuat akun';
+
+  @override
+  String get onboardingStart => 'Mulai mencatat kebiasaan';
 }

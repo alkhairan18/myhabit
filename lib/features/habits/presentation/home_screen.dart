@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/theme/tokens.dart';
 import '../application/providers.dart';
+import '../domain/habit.dart';
 import '../domain/schedule.dart';
 import '../domain/stats.dart';
 import 'habit_card.dart';
@@ -27,25 +29,29 @@ class HomeScreen extends ConsumerWidget {
     final habits = habitsAsync.value ?? const [];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appName), actions: [
-        IconButton(
-          tooltip: l10n.archiveTitle,
-          icon: const Icon(Icons.archive_outlined),
-          onPressed: () => context.push('/archive'),
-        ),
-        IconButton(
-          key: const Key('open-settings'),
-          tooltip: l10n.settingsTitle,
-          icon: const Icon(Icons.settings_outlined),
-          onPressed: () => context.push('/settings'),
-        ),
-      ]),
+      appBar: AppBar(
+        title: Text(l10n.appName),
+        actions: [
+          IconButton(
+            tooltip: l10n.archiveTitle,
+            icon: const Icon(Icons.inventory_2_outlined),
+            onPressed: () => context.push('/archive'),
+          ),
+          IconButton(
+            key: const Key('open-settings'),
+            tooltip: l10n.settingsTitle,
+            icon: const Icon(Icons.tune_rounded),
+            onPressed: () => context.push('/settings'),
+          ),
+        ],
+      ),
       floatingActionButton: habits.isEmpty
           ? null
-          : FloatingActionButton(
+          : FloatingActionButton.extended(
               tooltip: l10n.addHabit,
               onPressed: () => context.push('/habit/new'),
-              child: const Icon(Icons.add),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.addHabit),
             ),
       body: habitsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -58,10 +64,14 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _body(BuildContext context, WidgetRef ref, AppLocalizations l10n,
-      List all, DateTime today, DateTime selected, Set<int> done) {
+      List<Habit> all, DateTime today, DateTime selected, Set<int> done) {
     final scheduled = [for (final h in all) if (isScheduledOn(h, selected)) h];
-    final p = todayProgress(scheduled.cast(), done);
+    final p = todayProgress(scheduled, done);
+    final ratio = p.target == 0 ? 0.0 : p.done / p.target;
+    final allDone = p.target > 0 && p.done == p.target;
     final locale = Localizations.localeOf(context).toString();
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         WeekStrip(
@@ -69,26 +79,104 @@ class HomeScreen extends ConsumerWidget {
           today: today,
           onSelect: ref.read(selectedDateProvider.notifier).select,
         ),
+        // Focal point: Today's Ritual Progress summary card.
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(DateFormat('EEEE, d MMMM', locale).format(selected),
-                    style: Theme.of(context).textTheme.titleMedium),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: allDone ? cs.secondary.withAlpha(24) : cs.surface,
+              borderRadius: BorderRadius.circular(rCard),
+              border: Border.all(
+                color: allDone ? cs.secondary.withAlpha(140) : cs.outlineVariant,
               ),
-              if (selected == today) Text(l10n.todayLabel),
-              const SizedBox(width: 12),
-              Text(l10n.progressLabel(p.done, p.target),
-                  style: Theme.of(context).textTheme.titleMedium),
-            ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('EEEE, d MMMM', locale).format(selected),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            allDone ? l10n.dailyGoalDone : l10n.dailyGoalPartial,
+                            style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (selected == today) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: cs.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(rControl),
+                        ),
+                        child: Text(
+                          l10n.todayLabel,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                    ],
+                    Text(
+                      l10n.progressLabel(p.done, p.target),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: allDone ? cs.secondary : cs.primary,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(rMicro),
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: ratio),
+                    duration: animFast,
+                    curve: Curves.easeOutCubic,
+                    builder: (_, v, _) => LinearProgressIndicator(
+                      value: v,
+                      minHeight: 7,
+                      backgroundColor: cs.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation(
+                        allDone ? cs.secondary : cs.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Expanded(
           child: scheduled.isEmpty
-              ? Center(child: Text(l10n.nothingScheduled))
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      l10n.nothingScheduled,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: cs.onSurfaceVariant),
+                    ),
+                  ),
+                )
               : ListView(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 88),
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                   children: [
                     for (final h in scheduled)
                       HabitCard(
@@ -115,26 +203,53 @@ class _Empty extends StatelessWidget {
   final AppLocalizations l10n;
 
   @override
-  Widget build(BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(32),
+        child: Container(
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: BorderRadius.circular(rCard),
+            border: Border.all(color: cs.outlineVariant),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.checklist, size: 64),
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: cs.primary.withAlpha(24),
+                  borderRadius: BorderRadius.circular(rControl),
+                ),
+                child: Icon(Icons.spa_outlined, size: 28, color: cs.primary),
+              ),
               const SizedBox(height: 16),
-              Text(l10n.emptyTitle, style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                l10n.emptyTitle,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
               const SizedBox(height: 8),
-              Text(l10n.emptyBody, textAlign: TextAlign.center),
+              Text(
+                l10n.emptyBody,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: cs.onSurfaceVariant, height: 1.4),
+              ),
               const SizedBox(height: 24),
-              FilledButton(
+              FilledButton.icon(
                 onPressed: () => context.push('/habit/new'),
-                child: Text(l10n.addHabit),
+                icon: const Icon(Icons.add),
+                label: Text(l10n.addHabit),
               ),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
-
-

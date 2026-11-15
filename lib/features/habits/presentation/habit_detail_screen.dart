@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/theme/tokens.dart';
 import '../application/providers.dart';
+import '../domain/habit.dart';
 import '../domain/stats.dart';
 import '../domain/streak.dart';
 import 'heatmap.dart';
@@ -24,21 +26,61 @@ class HabitDetailScreen extends ConsumerWidget {
     };
     final streak = calculateStreak(habit, done, today);
     final stats = calculateStats(habit, done, today);
+    final cs = Theme.of(context).colorScheme;
+    final color = Color(habit.color);
+    final unit = habit.frequencyType == FrequencyType.timesPerWeek
+        ? l10n.streakUnitWeeks
+        : l10n.streakUnitDays;
     String pct(double r) => '${(r * 100).round()}%';
 
-    Widget stat(String key, String label, String value) => Card(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(value, key: Key(key), style: Theme.of(context).textTheme.headlineSmall),
-              Text(label),
-            ]),
+    Widget rateColumn(String key, String label, double rate) => Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+              const SizedBox(height: 4),
+              Text(
+                pct(rate),
+                key: Key(key),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+              ),
+              const SizedBox(height: 6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(rMicro),
+                child: LinearProgressIndicator(
+                  value: rate.clamp(0.0, 1.0),
+                  minHeight: 5,
+                  backgroundColor: cs.surfaceContainerHighest,
+                  valueColor: AlwaysStoppedAnimation(color),
+                ),
+              ),
+            ],
           ),
         );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(habit.name),
+        title: Row(
+          children: [
+            Icon(iconFor(habit.icon), color: color, size: 22),
+            const SizedBox(width: 10),
+            Flexible(child: Text(habit.name)),
+            if (habit.archivedAt != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: cs.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(rControl),
+                ),
+                child: Text(l10n.archivedBadge, style: const TextStyle(fontSize: 11)),
+              ),
+            ],
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: l10n.edit,
@@ -47,19 +89,129 @@ class HabitDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView(padding: const EdgeInsets.all(16), children: [
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          stat('stat-current', l10n.currentStreak, '${streak.current}'),
-          stat('stat-best', l10n.bestStreak, '${streak.best}'),
-          stat('stat-rate7', l10n.success7, pct(stats.rate7)),
-          stat('stat-rate30', l10n.success30, pct(stats.rate30)),
-          stat('stat-rateAll', l10n.successAll, pct(stats.rateAll)),
-          stat('stat-total', l10n.totalDone, '${stats.totalCompleted}'),
-        ]),
-        const SizedBox(height: 24),
-        Heatmap(habit: habit, completed: done, today: today),
-      ]),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Tier 1 Focal Point: Hero Streak & Total Completion Banner.
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(rCard),
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.currentStreak,
+                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                ),
+                const SizedBox(height: 4),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  children: [
+                    Icon(
+                      Icons.local_fire_department_rounded,
+                      color: streak.current > 0 ? cs.secondary : cs.onSurfaceVariant,
+                      size: 28,
+                    ),
+                    Text(
+                      '${streak.current}',
+                      key: const Key('stat-current'),
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                    ),
+                    Text(unit, style: TextStyle(color: cs.onSurfaceVariant)),
+                  ],
+                ),
+                Divider(height: 24, color: cs.outlineVariant),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.bestStreak,
+                              style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${streak.best}',
+                            key: const Key('stat-best'),
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontFeatures: const [FontFeature.tabularFigures()],
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.totalDone,
+                              style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${stats.totalCompleted}',
+                            key: const Key('stat-total'),
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontFeatures: const [FontFeature.tabularFigures()],
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Tier 2: Compact 3-window completion rate strip.
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(rCard),
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            child: Row(
+              children: [
+                rateColumn('stat-rate7', l10n.success7, stats.rate7),
+                const SizedBox(width: 16),
+                rateColumn('stat-rate30', l10n.success30, stats.rate30),
+                const SizedBox(width: 16),
+                rateColumn('stat-rateAll', l10n.successAll, stats.rateAll),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Tier 3: 3-Month Heatmap Panel.
+          Text(
+            l10n.heatmapTitle,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: BorderRadius.circular(rCard),
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            child: Heatmap(habit: habit, completed: done, today: today),
+          ),
+        ],
+      ),
     );
   }
 }
-

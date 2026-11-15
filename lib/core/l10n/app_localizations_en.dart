@@ -21,11 +21,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get dailyGoalDone => 'All habits completed for today';
+
+  @override
+  String get dailyGoalPartial => 'Tap a circle to log completion';
+
+  @override
   String get emptyTitle => 'No habits yet';
 
   @override
   String get emptyBody =>
-      'Create your first habit and check it off in one tap.';
+      'Start with one small daily habit and check it off in a single tap.';
 
   @override
   String get addHabit => 'Add habit';
@@ -50,7 +56,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editHabit => 'Edit habit';
 
   @override
-  String get nameLabel => 'Name';
+  String get nameLabel => 'Habit name';
+
+  @override
+  String get nameHint => 'e.g. Drink 8 glasses of water';
+
+  @override
+  String get iconSectionLabel => 'Icon';
+
+  @override
+  String get colorSectionLabel => 'Accent color';
+
+  @override
+  String get frequencySectionLabel => 'Schedule';
 
   @override
   String get errNameEmpty => 'Name is required';
@@ -68,6 +86,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get freqWeekly => 'Times per week';
 
   @override
+  String freqWeeklySummary(int count) {
+    return '${count}x per week';
+  }
+
+  @override
   String get errNoDays => 'Pick at least one day';
 
   @override
@@ -77,7 +100,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errTarget => 'Enter 1 to 7';
 
   @override
-  String get save => 'Save';
+  String get save => 'Save habit';
 
   @override
   String get delete => 'Delete';
@@ -101,13 +124,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get archiveTitle => 'Archive';
 
   @override
+  String get archivedBadge => 'Archived';
+
+  @override
   String get addReminder => 'Add reminder';
 
   @override
   String get reminders => 'Reminders';
 
   @override
-  String get noArchived => 'No archived habits.';
+  String get noArchived =>
+      'No archived habits. Habits you archive stay here along with their completion history.';
 
   @override
   String get currentStreak => 'Current streak';
@@ -116,16 +143,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bestStreak => 'Best streak';
 
   @override
-  String get success7 => 'Success, 7 days';
+  String get streakUnitDays => 'days';
 
   @override
-  String get success30 => 'Success, 30 days';
+  String get streakUnitWeeks => 'weeks';
+
+  @override
+  String get success7 => '7 days';
+
+  @override
+  String get success30 => '30 days';
 
   @override
   String get successAll => 'All time';
 
   @override
   String get totalDone => 'Total completed';
+
+  @override
+  String get heatmapTitle => 'Last 3 months';
 
   @override
   String get heatDone => 'done';
@@ -158,24 +194,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get themeLabel => 'Theme';
+  String get themeLabel => 'Appearance';
 
   @override
   String get themeSystem => 'Follow system';
 
   @override
-  String get themeLight => 'Light';
+  String get themeLight => 'Light (Warm paper)';
 
   @override
-  String get themeDark => 'Dark';
+  String get themeDark => 'Dark (Deep pine)';
 
   @override
-  String get onboardingTitle => 'Build good habits every day';
+  String get privacyNote =>
+      '100% stored on this device. No account, no trackers.';
+
+  @override
+  String get onboardingTitle => 'Log your daily rituals in one tap';
 
   @override
   String get onboardingBody =>
-      'Track progress in one tap, no account required, fully offline.';
+      'Build consistency with flexible schedules, honest streak math, and a 3-month activity heatmap stored privately on your phone.';
 
   @override
-  String get onboardingStart => 'Get started';
+  String get onboardingPillar1 =>
+      'One tap to check off today or catch up on past days';
+
+  @override
+  String get onboardingPillar2 =>
+      'Streaks and rates computed directly from your log history';
+
+  @override
+  String get onboardingPillar3 =>
+      'Works completely offline with no account required';
+
+  @override
+  String get onboardingStart => 'Start tracking habits';
 }

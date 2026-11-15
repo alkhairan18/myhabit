@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/date_utils.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/theme/tokens.dart';
 import '../domain/habit.dart';
 import '../domain/schedule.dart';
 
@@ -31,7 +32,7 @@ class Heatmap extends StatelessWidget {
 
     Widget cell(DateTime day) {
       final inRange = !day.isBefore(start) && !day.isAfter(today);
-      if (!inRange) return const SizedBox(width: 18, height: 18);
+      if (!inRange) return const SizedBox(width: 20, height: 20);
       final done = completed.contains(day);
       final scheduled = isScheduledOn(habit, day);
       return Semantics(
@@ -39,8 +40,8 @@ class Heatmap extends StatelessWidget {
         label: '${toIso(day)}: ${done ? l10n.heatDone : l10n.heatNotDone}',
         excludeSemantics: true,
         child: Container(
-          width: 16,
-          height: 16,
+          width: 18,
+          height: 18,
           margin: const EdgeInsets.all(1),
           decoration: BoxDecoration(
             color: done
@@ -49,10 +50,10 @@ class Heatmap extends StatelessWidget {
                     ? cs.surfaceContainerHighest
                     : null,
             border: scheduled ? null : Border.all(color: cs.outlineVariant),
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(rMicro),
           ),
           child: done
-              ? const Icon(Icons.check, size: 11, color: Colors.white)
+              ? const Icon(Icons.check, size: 12, color: Colors.white)
               : null,
         ),
       );

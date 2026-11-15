@@ -28,7 +28,7 @@ Future<void> main() async {
 
 Future<void> unawaitedSync(ProviderContainer c) async {
   final repo = c.read(habitRepositoryProvider);
-  final active = await repo.watchActive().first;
+  final active = await repo.getActive();
   final reminders = await repo.allEnabledReminders();
   await c.read(notificationServiceProvider).sync(active, reminders);
 }
