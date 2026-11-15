@@ -79,7 +79,6 @@ class HomeScreen extends ConsumerWidget {
           today: today,
           onSelect: ref.read(selectedDateProvider.notifier).select,
         ),
-        // Focal point: Today's Ritual Progress summary card.
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Container(

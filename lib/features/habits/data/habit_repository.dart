@@ -78,8 +78,6 @@ class HabitRepository {
   Stream<List<Habit>> watchActive() => _watch((t) => t.archivedAt.isNull());
   Stream<List<Habit>> watchArchived() => _watch((t) => t.archivedAt.isNotNull());
 
-  Future<List<Habit>> getActive() => watchActive().first;
-
   Future<Habit?> getHabit(int id) async {
     final r = await (_db.select(_db.habits)..where((t) => t.id.equals(id))).getSingleOrNull();
     return r == null ? null : _toHabit(r);

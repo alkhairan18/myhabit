@@ -9,7 +9,7 @@ import '../features/habits/presentation/home_screen.dart';
 import '../features/settings/onboarding_screen.dart';
 import '../features/settings/settings_screen.dart';
 
-int _id(GoRouterState s) => int.parse(s.pathParameters['id']!);
+int _id(GoRouterState s) => int.tryParse(s.pathParameters['id'] ?? '') ?? -1;
 
 final routerProvider = Provider<GoRouter>((ref) => GoRouter(
       redirect: (_, state) {

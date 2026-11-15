@@ -15,6 +15,10 @@ ThemeData _theme(Brightness b) {
     surfaceContainerHighest: isDark ? darkContainer : lightContainer,
     outlineVariant: isDark ? darkBorder : lightBorder,
   );
+  final inputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(rControl),
+    borderSide: BorderSide(color: cs.outlineVariant),
+  );
   return ThemeData(
     useMaterial3: true,
     colorScheme: cs,
@@ -45,14 +49,8 @@ ThemeData _theme(Brightness b) {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: cs.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(rControl),
-        borderSide: BorderSide(color: cs.outlineVariant),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(rControl),
-        borderSide: BorderSide(color: cs.outlineVariant),
-      ),
+      border: inputBorder,
+      enabledBorder: inputBorder,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(

@@ -92,7 +92,6 @@ class HabitDetailScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Tier 1 Focal Point: Hero Streak & Total Completion Banner.
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -174,7 +173,6 @@ class HabitDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Tier 2: Compact 3-window completion rate strip.
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -193,7 +191,6 @@ class HabitDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          // Tier 3: 3-Month Heatmap Panel.
           Text(
             l10n.heatmapTitle,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(

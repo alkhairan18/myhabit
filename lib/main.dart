@@ -18,17 +18,12 @@ Future<void> main() async {
       notificationServiceProvider.overrideWithValue(notifService),
     ],
   );
-  // Reschedule active reminders on startup / after device reboot.
-  unawaitedSync(container);
+  final repo = container.read(habitRepositoryProvider);
+  repo.watchActive().first.then((active) async => container
+      .read(notificationServiceProvider)
+      .sync(active, await repo.allEnabledReminders()));
   runApp(UncontrolledProviderScope(
     container: container,
     child: const RutinApp(),
   ));
-}
-
-Future<void> unawaitedSync(ProviderContainer c) async {
-  final repo = c.read(habitRepositoryProvider);
-  final active = await repo.getActive();
-  final reminders = await repo.allEnabledReminders();
-  await c.read(notificationServiceProvider).sync(active, reminders);
 }

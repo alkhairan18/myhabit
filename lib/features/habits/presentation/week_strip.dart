@@ -107,7 +107,6 @@ class WeekStrip extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                // Real state marker: marks today's date in the calendar strip (R-31).
                 Container(
                   width: 4,
                   height: 4,

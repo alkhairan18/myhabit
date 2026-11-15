@@ -40,7 +40,6 @@ void main() {
     expect(t.widget<MaterialApp>(find.byType(MaterialApp)).themeMode, ThemeMode.dark);
     expect(SettingsRepository(prefs).themeMode, AppThemeMode.dark);
 
-    // Rebuild a fresh ProviderScope with the same prefs.
     await t.pumpWidget(UniqueKeyWidget(child: buildApp(prefs)));
     await t.pumpAndSettle();
     expect(t.widget<MaterialApp>(find.byType(MaterialApp)).themeMode, ThemeMode.dark);
