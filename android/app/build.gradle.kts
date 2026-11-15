@@ -13,7 +13,8 @@ if (keystoreFile.exists()) {
 
 android {
     namespace = "dev.alkhairan.rutin"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
+    compileSdkMinor = 0
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
