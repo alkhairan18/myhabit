@@ -149,4 +149,29 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get permDenied =>
       'Izin notifikasi ditolak; pengingat tidak akan berbunyi.';
+
+  @override
+  String get settingsTitle => 'Pengaturan';
+
+  @override
+  String get themeLabel => 'Tema';
+
+  @override
+  String get themeSystem => 'Mengikuti sistem';
+
+  @override
+  String get themeLight => 'Terang';
+
+  @override
+  String get themeDark => 'Gelap';
+
+  @override
+  String get onboardingTitle => 'Bangun kebiasaan baik tiap hari';
+
+  @override
+  String get onboardingBody =>
+      'Catat progres dalam satu ketukan, tanpa akun, sepenuhnya offline.';
+
+  @override
+  String get onboardingStart => 'Mulai';
 }

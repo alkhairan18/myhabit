@@ -149,4 +149,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get permDenied =>
       'Notification permission denied; reminders will not fire.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get themeLabel => 'Theme';
+
+  @override
+  String get themeSystem => 'Follow system';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get onboardingTitle => 'Build good habits every day';
+
+  @override
+  String get onboardingBody =>
+      'Track progress in one tap, no account required, fully offline.';
+
+  @override
+  String get onboardingStart => 'Get started';
 }

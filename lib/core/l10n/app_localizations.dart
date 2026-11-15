@@ -361,6 +361,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Izin notifikasi ditolak; pengingat tidak akan berbunyi.'**
   String get permDenied;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get settingsTitle;
+
+  /// No description provided for @themeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tema'**
+  String get themeLabel;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengikuti sistem'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In id, this message translates to:
+  /// **'Terang'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In id, this message translates to:
+  /// **'Gelap'**
+  String get themeDark;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bangun kebiasaan baik tiap hari'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat progres dalam satu ketukan, tanpa akun, sepenuhnya offline.'**
+  String get onboardingBody;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai'**
+  String get onboardingStart;
 }
 
 class _AppLocalizationsDelegate

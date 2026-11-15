@@ -33,6 +33,12 @@ class HomeScreen extends ConsumerWidget {
           icon: const Icon(Icons.archive_outlined),
           onPressed: () => context.push('/archive'),
         ),
+        IconButton(
+          key: const Key('open-settings'),
+          tooltip: l10n.settingsTitle,
+          icon: const Icon(Icons.settings_outlined),
+          onPressed: () => context.push('/settings'),
+        ),
       ]),
       floatingActionButton: habits.isEmpty
           ? null
@@ -130,4 +136,5 @@ class _Empty extends StatelessWidget {
         ),
       );
 }
+
 

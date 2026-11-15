@@ -43,5 +43,13 @@
   "permTitle": "Enable reminders?",
   "permBody": "Rutin uses local notifications to remind you at the times you choose.",
   "permAllow": "Allow",
-  "permDenied": "Notification permission denied; reminders will not fire."
+  "permDenied": "Notification permission denied; reminders will not fire.",
+  "settingsTitle": "Settings",
+  "themeLabel": "Theme",
+  "themeSystem": "Follow system",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "onboardingTitle": "Build good habits every day",
+  "onboardingBody": "Track progress in one tap, no account required, fully offline.",
+  "onboardingStart": "Get started"
 }

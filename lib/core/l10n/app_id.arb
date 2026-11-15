@@ -46,5 +46,13 @@
   "permTitle": "Aktifkan pengingat?",
   "permBody": "Rutin memakai notifikasi lokal agar kamu diingatkan tepat pada jam yang kamu pilih.",
   "permAllow": "Izinkan",
-  "permDenied": "Izin notifikasi ditolak; pengingat tidak akan berbunyi."
+  "permDenied": "Izin notifikasi ditolak; pengingat tidak akan berbunyi.",
+  "settingsTitle": "Pengaturan",
+  "themeLabel": "Tema",
+  "themeSystem": "Mengikuti sistem",
+  "themeLight": "Terang",
+  "themeDark": "Gelap",
+  "onboardingTitle": "Bangun kebiasaan baik tiap hari",
+  "onboardingBody": "Catat progres dalam satu ketukan, tanpa akun, sepenuhnya offline.",
+  "onboardingStart": "Mulai"
 }
